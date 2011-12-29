@@ -1,0 +1,406 @@
+body {
+	font-size: 150%;
+	background: black;
+	padding: 0;
+	margin: 0;
+}
+
+h1, h2 {
+	text-align: center;
+	font-size: 1em;
+	height: 0;
+	margin: 0;
+}
+
+input, table, tr, td {
+	font-size: 100%;
+}
+
+/**
+	Controls
+*/
+#controls  {
+	padding: 0;
+	list-style: none;
+	position: fixed;
+	top: -1em;
+	left: 0;
+	bottom: -1em;
+	right: 0;
+	z-index: 25;
+}
+
+#controls > :first-child,
+#controls > :first-child+li,
+#controls > :first-child+li+li {
+	line-height: 10em;
+	text-align: center;
+	vertical-align: middle;
+	text-indent: -100em;
+}
+
+#controls > li > a {
+	display: block;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	text-decoration: none;
+	color: black;
+}
+
+
+/*First Columns*/
+
+#controls > :first-child+li {
+	left: 0;
+	right: 67%;
+	position: absolute;
+}
+
+/*Second Columns*/
+
+#controls > :first-child,
+#controls > :last-child,
+#controls > :first-child+li+li+li {
+	left: 33%;
+	right: 33%;
+	position: absolute;
+}
+
+/*Third Columns*/
+
+#controls > :first-child+li+li {
+	left: 67%;
+	right: 0;
+	position: absolute;
+}
+
+/*Top Sixth*/
+
+#controls > :first-child+li+li+li {
+	top: 0;
+	bottom: 83%;/*17*/
+	line-height: 100%;
+	text-align: center;
+}
+
+/*Top Third*/
+
+#controls > :first-child {
+	top: 17%;
+	bottom: 50%;
+}
+
+/*Bottom Third*/
+/*na*/
+
+/*Bottom Sixth*/
+#none {
+	top: 83%;
+	bottom: 0;
+}
+
+/*Full height*/
+
+#controls > :first-child+li,
+#controls > :first-child+li+li {
+	top: 0;
+	bottom: 0;
+}
+
+#controls > :first-child+li+li+li > a {
+	margin: 1em 0 0;
+}
+
+#controls > :last-child {
+	position: fixed;
+	bottom: 1em;
+	line-height: 1em;
+	text-align: center;
+}
+
+#controls > li > select {
+	font-size: 1.25em;
+}
+
+/*Content Replacement*/
+
+#controls > :first-child:hover a::before {
+	position: absolute;
+	content: ">>";
+	line-height: 1em;
+	width: 100%;
+	text-indent: 0;
+}
+
+#controls > :first-child+li:hover a::before {
+	position: absolute;
+	content: "<";
+	text-indent: 1.5em;
+}
+
+#controls > :first-child+li+li:hover a::before {
+	position: absolute;
+	right: 0;
+	content: ">";
+	text-indent: -3.5em;
+}
+
+/** /Controls **/
+
+
+/**
+    Options
+*/
+
+#options, #auth {
+	display: none;
+	position: fixed;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	background: rgba(0,0,255,0.25);
+	z-index: 50;
+}
+
+#options:target, #auth:target {
+	display: block;
+}
+
+#options label, #auth label {
+	float: left;
+	clear: left;
+	width: 40%;
+	margin: 0 1em 0 0;
+}
+
+#auth label {
+	position: relative;
+	left: -1em;
+	width: 50%;
+	text-align: right;
+}
+
+label + * {
+	float: left;
+}
+
+[type="checkbox"] {
+	height: 1em;
+}
+
+fieldset p {
+	color: #666;
+	font-size: 0.75em;
+}
+
+fieldset {
+	margin: 1em 0 2em;
+}
+
+.dialog {
+	position: absolute;
+	top: 5%;
+	right: 5%;
+	bottom: 10%;
+	left: 5%;
+	background: rgba(255,255,255,0.75);
+	border: 0.2em solid black;
+	border-radius: 0.5em;
+	padding: 1em;
+	margin: 1em auto;
+	overflow: auto;
+}
+
+h2 {
+	margin: 0 0 2em;
+}
+
+.control {
+	font-size: 0.75em;
+	position: fixed;
+	bottom: 5%;
+	right: 0;
+	text-align: center;
+	margin-right: 5%;
+	background: rgba(255,255,255,0.75);
+	border: 0.2em solid blue;
+	border-radius: 0.5em;
+	padding: 0.25em;
+	width: 15ex;
+}
+
+.control + .control {
+	right: 18ex;
+}
+
+#debugOptionsForm {
+	font-size: 0.85em;
+}
+
+/** /Options **/
+
+/**
+	Reader
+*/
+
+#ComicReader {
+	background: #333;
+	background: transparent -webkit-radial-gradient(50% 50%, ellipse cover, rgba(255,255,255,0.85), rgba(255,255,255,0.85) 15%, rgba(128,128,128,0.05) 90%);
+	border-radius: 0.25em;
+	line-height: 10em;
+	min-height: 18em;
+	text-align: center;
+	vertical-align: middle;
+	position: relative;
+	margin: 1em;
+	-webkit-transition: all 1s ease-out;
+	padding: 0.75em 0;
+	opacity: 1;
+}
+
+#ComicReader > .entry {
+	-webkit-transition: opacity 1s ease-out;
+	position: absolute;
+	top: 2%;
+	opacity: 0;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	margin-top: 0.35em;
+}
+
+#ComicReader > .entry > a {
+	display: block;
+}
+
+#ComicReader > .active {
+	-webkit-transition: opacity 1s ease-in;
+	position: relative;
+	opacity: 1;
+	margin-top: 0;
+	height: auto;
+	overflow: visible;
+}
+
+#ComicReader img {
+	text-align: center;
+	vertical-align: middle;
+}
+
+#ComicReader .imgPortait:last-child img,
+#ComicReader .imgLandscape:last-child img {
+}
+
+.inprogress #ComicReader::before {
+	content: "Loading...";
+	display: block;
+	position: absolute;
+	top: -0.1em;
+	left: -0.1em;
+	min-width: 100%;
+	min-height: 100%;
+	text-shadow: 0 0 0.75em #FF8;
+	border: 0.1em solid rgba(0,0,0,0.9);
+	z-index: 50;
+}
+
+
+/*React on visible options*/
+
+.ls-p-limit-height.orientation_landscape #ComicReader > .imgPortait img,
+.p-p-limit-height.orientation_portrait #ComicReader > .imgPortait img {
+	max-height: 85%;
+}
+
+.ls-ls-limit-width.orientation_landscape #ComicReader > .imgLandscape img,
+.p-ls-limit-width.orientation_portrait #ComicReader > .imgLandscape img {
+	max-width: 95%;
+}
+
+.ls-ls-force-height.orientation_landscape #ComicReader > .imgLandscape img {
+	height: 85%;
+}
+
+.p-p-force-height.orientation_portrait #ComicReader > .imgPortait img {
+	min-height: 85%;
+}
+
+.p-p-force-width.orientation_portrait #ComicReader > .imgPortait img {
+	width: 95%;
+}
+
+.ls-ls-force-width.orientation_landscape #ComicReader > .imgLandscape img {
+	min-width: 95%;
+}
+
+.advancedOption .advanced, .advancedOption label.advanced + input {
+	display: inherit;
+}
+
+.advanced, label.advanced + input {
+	display: none;
+}
+
+/** /Reader **/
+
+
+
+/**
+	Glow And Glow Animation!!
+*/
+
+h1,
+.inprogress #ComicReader::before {
+	text-shadow: 0 0 0.75em #FF8;
+}
+
+.inprogress h1 {
+	-webkit-animation: loadingText 3s linear 0 infinite alternate;
+}
+
+@-webkit-keyframes loadingText {
+	0% {
+		text-shadow: 0 0 1.5em #FF8;
+	}
+	100% {
+		text-shadow: 0 0 0.2em #FF8;
+	}
+}
+
+#ComicReader {
+	box-shadow: 0em 0em 2em rgba(220,220,128,0.5);
+}
+
+.inprogress #ComicReader {
+	-webkit-animation: loadingBlock 3s linear 0 infinite alternate;
+}
+
+@-webkit-keyframes loadingBlock {
+	0% {
+		box-shadow: 0em 0em 2em rgba(220,220,128,0.5);
+	}
+	100% {
+		box-shadow: 0em 0em 0.25em rgba(220,220,128,0.5);
+	}
+}
+
+#controls a::before,
+#controls > :first-child+li+li+li > a:hover {
+	color: rgba(32,32,32,1);
+	text-shadow: 0 0 0.75em #FFA;
+}
+/** /Glow And Glow Animation **/
+
+
+
+/**
+	Gradients
+*/
+#ComicReader::before {
+	color: rgba(0,0,0,1);
+	/*background: transparent -webkit-radial-gradient(50% 50%, ellipse cover, rgba(0,0,0,0.5), rgba(0,0,0,0.5) 15%, rgba(0,0,0,0.95) 90%);*/
+	background: rgba(0,0,0,0.5) -webkit-gradient(radial, 50% 50%, 30, 50% 50%, 800, from(rgba(0,0,0,0)), to(rgba(0,0,0,0.75)), color-stop(90%, rgba(0,0,0,0.75)));
+}
+
