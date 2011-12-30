@@ -3,181 +3,208 @@
  * 
  * @fileoverview
  */
-
-nl_windgazer_debug = true;
-nl_windgazer_console = {
-	log:function(message) {
-		//Just dumping the message into the void :)
-	}
-};
-console = console||nl_windgazer_console;
-
-Console = nl_windgazer_debug?console:nl_windgazer_console;
-
-/**
- * This is the Singleton class that stores and retreives the comics data.
- * 
- * @class
- */
-var ComicReader = {
-	keys: {
-		currentComicID:"cid",
-		currentComicEntry:"entry."
-	},
-	entry:null,
-	comics:new Array(),
-	settings:new Settings("nl.windgazer.comicreader"),
-	/**
-	 * Initialize the reader with any new data it may have picked up while libraries were loading.
-	 */
-	init:Events.attach(window, "load", function() {
+(function() {
+	nl_windgazer_debug = true;
+	nl_windgazer_console = {
+		log:function(message) {
+			//Just dumping the message into the void :)
+		},
+		warn:function(message) {
+			//Just dumping the message into the void :)
+		},
+		info:function(message) {
+			//Just dumping the message into the void :)
+		}
+	};
+	this.console = this.console||nl_windgazer_console;
 	
-		ComicReader.setupComicSelector();
+	this.Console = nl_windgazer_debug?this.console:nl_windgazer_console;
+})();
 
-		var cs = document.getElementById("comicSelector");
-		Events.attach(cs, "change", function() {
-			var cid = cs.options[cs.selectedIndex].value;
-			ComicReader.fetchCurrentEntry(cid);
-		});
+(function() {
 
-		var cid = ComicReader.settings.getPreference(ComicReader.keys.currentComicID);
-
-		ComicReader.fetchCurrentEntry(cid);
-	
-	}),
 	/**
-	 * Returns a list(array) of comics.
+	 * This is the class that stores and retreives the comics data.
+	 * This class is in serious need of refactoring!!!
+	 * 
+	 * @class
 	 */
-	listComics:function() {
-		return this.comics;
-	},
-	/**
-	 * Adds a comic to the list.
-	 */
-	addComic:function(comic) {
-		this.comics[comic.getTitle()] = comic;
-	},
-	/**
-	 * Set the next entry on the comic reader, used as a callback from
-	 * any of the getXXXEntry calls in the ReaderComic class.
-	 */
-	setNextEntry:function(entry) {
-		if (entry) {
-			var id = entry.getComic().getTitle();
+	var ComicReader = Class.extend ({
+		keys: {
+			currentComicID:"cid",
+			currentComicEntry:"entry."
+		},
+		/**
+		 * Initialize the reader with any new data it may have picked up while libraries were loading.
+		 */
+		init:function() {
 
-//			if (ComicReader.entry) {
-//				this.settings.deleteUrl(ComicReader.keys.currentComicEntry + id, ComicReader.entry.getHREF());
-//			}
-
-			ComicReader.entry = entry;
-			var disp = ComicReader.createDisplay(entry);
-			var cr = document.getElementById("ComicReader");
-			if (cr.childNodes && cr.childNodes.length > 1) {
-				cr.removeChild(cr.firstChild);
-			}
-			cr.appendChild(disp);
-			ComicReader.settings.setUrl(ComicReader.keys.currentComicEntry + id, entry.getHREF());
-			//Delay hiding/revealing until the image has actually finished loading!
-			var img = disp.firstChild.firstChild;
-			Events.attach(img, "load", function() {
-				ComicReader.cancelQuery();
-				var landscape = Math.max(img.width,img.height)===img.width;
-				cr.firstChild.className = cr.firstChild.className.replace(/\s?\bactive\b/,"");
-				disp.className += (" active img" + (landscape?"Landscape":"Portait"));
+			this.entry = null;
+			this.comics = new Array();
+			this.settings = null;
+			
+			var self = this;
+			
+			window.ce.attachEvent( ON_AUTH_SUCCESS, function() {
+				self.authSuccess();
 			});
 
-		} else {
-
-			ComicReader.cancelQuery();
-
-		}
-	},
-	fetchNextEntry:function() {
-		if (this.entry.getHasNextEntry()) {
-			this.lockInterface();
-			this.entry.getComic().getNextEntry(this.entry);
-			return true;
-		}
-		return false;
-	},
-	fetchPrevEntry:function() {
-		if (this.entry.getHasPrevEntry()) {
-			this.lockInterface();
-			this.entry.getComic().getPrevEntry(this.entry);
-			return true;
-		}
-		return false;
-	},
-	fetchLatestEntry:function(cid) {
-		this.lockInterface();
-		if (cid) {
-			this.listComics()[cid].getLatestEntry();
-		} else if (this.entry) {
-			this.entry.getComic().getLatestEntry();
-		} else {
-			this.cancelQuery();
-		}
-	},
-	/**
-	 * This method fetches the current entry that is active for the actor. This method must
-	 * be used to switch from one comic to the next as it is the only one that attempts to
-	 * store the id of the comic.
-	 */
-	fetchCurrentEntry:function(cid) {
-		this.lockInterface();
-		var cidf = cid||ComicReader.settings.getPreference(this.keys.currentComicID);
-		if (cidf) {//If we manage to obtain an id, continue to load an entry.
-			if (cid) { //If a comic id was provided we're 'switching' to a new comic and preserve this knowledge.
-				ComicReader.settings.setPreference(this.keys.currentComicID, cid);
+			this.settings = new Settings("nl.windgazer.comicreader");
+		
+		},
+		authSuccess:function() {
+	
+				this.setupComicSelector();
+		
+				var cs = document.getElementById("comicSelector");
+				var self = this;
+				Events.attach(cs, "change", function() {
+					var cid = cs.options[cs.selectedIndex].value;
+					self.fetchCurrentEntry(cid);
+				});
+		
+				var cid = this.settings.getPreference(this.keys.currentComicID);
+	
+				this.fetchCurrentEntry(cid);
+		},
+		/**
+		 * Set the next entry on the comic reader, used as a callback from
+		 * any of the getXXXEntry calls in the ReaderComic class.
+		 */
+		setNextEntry:function(entry) {
+			if (entry) {
+				var id = entry.getComic().getTitle();
+	
+	//			if (ComicReader.entry) {
+	//				this.settings.deleteUrl(ComicReader.keys.currentComicEntry + id, ComicReader.entry.getHREF());
+	//			}
+	
+				this.entry = entry;
+				var disp = this.createDisplay(entry);
+				var cr = document.getElementById("ComicReader");
+				if (cr.childNodes && cr.childNodes.length > 1) {
+					cr.removeChild(cr.firstChild);
+				}
+				cr.appendChild(disp);
+				this.settings.setUrl(this.keys.currentComicEntry + id, entry.getHREF());
+				//Delay hiding/revealing until the image has actually finished loading!
+				var img = disp.firstChild.firstChild;
+				
+				var self = this;
+				Events.attach(img, "load", function() {
+					self.cancelQuery();
+					var landscape = Math.max(img.width,img.height)===img.width;
+					cr.firstChild.className = cr.firstChild.className.replace(/\s?\bactive\b/,"");
+					disp.className += (" active img" + (landscape?"Landscape":"Portait"));
+				});
+	
+			} else {
+	
+				this.cancelQuery();
+	
 			}
-			var entryUrl = ComicReader.settings.getUrl(this.keys.currentComicEntry + cidf);
-			if (entryUrl) { //If a known entry is found, let's grab it.
-				this.getComicById(cidf).getEntryByHREF(entryUrl);
-			} else { //Else load the latest entry for the comic from the comic website.
-				this.fetchLatestEntry(cidf);
+		},
+		fetchNextEntry:function() {
+			if (this.entry.getHasNextEntry()) {
+				this.lockInterface();
+				this.entry.getComic().getNextEntry(this.entry);
+				return true;
+			}
+			return false;
+		},
+		fetchPrevEntry:function() {
+			if (this.entry.getHasPrevEntry()) {
+				this.lockInterface();
+				this.entry.getComic().getPrevEntry(this.entry);
+				return true;
+			}
+			return false;
+		},
+		fetchLatestEntry:function(cid) {
+			this.lockInterface();
+			if (cid) {
+				this.listComics()[cid].getLatestEntry();
+			} else if (this.entry) {
+				this.entry.getComic().getLatestEntry();
+			} else {
+				this.cancelQuery();
+			}
+		},
+		/**
+		 * This method fetches the current entry that is active for the actor. This method must
+		 * be used to switch from one comic to the next as it is the only one that attempts to
+		 * store the id of the comic.
+		 */
+		fetchCurrentEntry:function(cid) {
+			this.lockInterface();
+			var cidf = cid||this.settings.getPreference(this.keys.currentComicID);
+			if (cidf) {//If we manage to obtain an id, continue to load an entry.
+				if (cid) { //If a comic id was provided we're 'switching' to a new comic and preserve this knowledge.
+					this.settings.setPreference(this.keys.currentComicID, cid);
+				}
+				var entryUrl = this.settings.getUrl(this.keys.currentComicEntry + cidf);
+				if (entryUrl) { //If a known entry is found, let's grab it.
+					this.getComicById(cidf).getEntryByHREF(entryUrl);
+				} else { //Else load the latest entry for the comic from the comic website.
+					this.fetchLatestEntry(cidf);
+				}
+			}
+		},
+		lockInterface: function() {
+			document.body.className += " inprogress";
+		},
+		cancelQuery: function() {
+			document.body.className = document.body.className.replace(/ ?\binprogress\b/gi, "");
+		},
+		/**
+		 * @private
+		 */
+		createDisplay:function(entry) {
+			var div = document.createElement("div");
+			div.className = "entry";
+			var a = document.createElement("a");
+			a.href = entry.getHREF();
+			a.title = entry.getTitle();
+			var img = document.createElement("img");
+			img.src = entry.getIMG();
+			img.alt = entry.getTitle();
+			div.appendChild(a);
+			a.appendChild(img);
+			return div;
+		},
+		/**
+		 * Returns a list(array) of comics.
+		 */
+		listComics:function() {
+			return this.comics;
+		},
+		/**
+		 * Adds a comic to the list.
+		 */
+		addComic:function(comic) {
+			this.comics[comic.getTitle()] = comic;
+		},
+		getComicById:function(cid) {
+			return this.comics[cid];
+		},
+		/**
+		 * Setup controls to list all available comics.
+		 */
+		setupComicSelector:function() {
+			var cs = document.getElementById("comicSelector");
+			var cid = this.settings.getPreference(this.keys.currentComicID);
+			cs.options.length = 0; //Wipe out existing options.
+			for ( i in this.comics ) {
+				var c = this.comics[i];
+				var selected = cid&&cid==c.getTitle();
+				cs.options[cs.options.length] = new Option(c.getTitle(), c.getTitle(), false, selected);
 			}
 		}
-	},
-	lockInterface: function() {
-		document.body.className += " inprogress";
-	},
-	cancelQuery: function() {
-		document.body.className = document.body.className.replace(/ ?\binprogress\b/gi, "");
-	},
-	getComicById:function(cid) {
-		return this.comics[cid];
-	},
-	/**
-	 * @private
-	 */
-	createDisplay:function(entry) {
-		var div = document.createElement("div");
-		div.className = "entry";
-		var a = document.createElement("a");
-		a.href = entry.getHREF();
-		a.title = entry.getTitle();
-		var img = document.createElement("img");
-		img.src = entry.getIMG();
-		img.alt = entry.getTitle();
-		div.appendChild(a);
-		a.appendChild(img);
-		return div;
-	},
-	/**
-	 * Setup controls to list all available comics.
-	 */
-	setupComicSelector:function() {
-		var cs = document.getElementById("comicSelector");
-		var cid = ComicReader.settings.getPreference(this.keys.currentComicID);
-		cs.options.length = 0; //Wipe out existing options.
-		for ( i in this.comics ) {
-			var c = this.comics[i];
-			var selected = cid&&cid==c.getTitle();
-			cs.options[cs.options.length] = new Option(c.getTitle(), c.getTitle(), false, selected);
-		}
-	}
-};
+	});
 
+	window.ComicReader = new ComicReader();
+
+})();
 
 
 /**
@@ -194,7 +221,7 @@ var ReaderComic = Class.extend ( {
 	 */
 	init: function(configJSON){
 		this.config = configJSON;
-		this.callback = ComicReader.setNextEntry;
+		this.callback = function(o){ComicReader.setNextEntry(o);};
 	},
 	
 	getTitle:function() {
