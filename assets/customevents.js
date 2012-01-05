@@ -1,3 +1,21 @@
+(function() {
+	nl_windgazer_debug = true;
+	nl_windgazer_console = {
+		log:function(message) {
+			//Just dumping the message into the void :)
+		},
+		warn:function(message) {
+			//Just dumping the message into the void :)
+		},
+		info:function(message) {
+			//Just dumping the message into the void :)
+		}
+	};
+	this.console = this.console||nl_windgazer_console;
+	
+	this.Console = nl_windgazer_debug?this.console:nl_windgazer_console;
+})();
+
 (function(){
 	
 	var registry = [];

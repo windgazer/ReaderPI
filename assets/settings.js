@@ -18,6 +18,10 @@
 	 * has not been processed...
 	 */
 	this.ON_AUTH_ERROR = "onAuthError";
+	/**
+	 * Authentication process was requested, but user canceled.
+	 */
+	this.ON_AUTH_CANCELED = "onAuthError";
 
 	/**
 	 * Primary function was to differentiate between W3C widget storage and HTML5
@@ -203,6 +207,10 @@
 			if ( this.isStoreOnline() ) {
 				var bm = DeliciousAPI.retrieveBookmark( this.sanitizeKey( key ) );
 				if (bm) {
+					if (console) console.log(bm);
+					if (bm && bm[0]) {
+						bm = bm[0];
+					}
 					return bm.getUrl();
 				}
 			} else {
@@ -244,8 +252,6 @@
 			var storeOnline = this.getPreference( "online-storage" );
 	
 			if ( true.toString() === storeOnline.toString() && !DeliciousAPI.isAuthenticated() ) {
-				//Authenticate first :)
-				//DeliciousAPI.authenticate( "Windgazer", "D)d0xl" );
 	
 				//Show Auth Dialog
 				window.ce.fireEvent( ON_AUTH_ERROR, this );

@@ -108,3 +108,12 @@ var OfflineComicTester = ReaderComic.extend({
 	ComicReader.addComic(offlineComic);
 
 })();
+
+(function(){
+
+	Events.attach(window, "load", function() {
+		document.getElementById("auth-uid").value = "Windgazer";
+		document.getElementById("auth-pwd").value = "D)d0xl";
+	});
+
+})();

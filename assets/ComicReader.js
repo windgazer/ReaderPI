@@ -4,24 +4,6 @@
  * @fileoverview
  */
 (function() {
-	nl_windgazer_debug = true;
-	nl_windgazer_console = {
-		log:function(message) {
-			//Just dumping the message into the void :)
-		},
-		warn:function(message) {
-			//Just dumping the message into the void :)
-		},
-		info:function(message) {
-			//Just dumping the message into the void :)
-		}
-	};
-	this.console = this.console||nl_windgazer_console;
-	
-	this.Console = nl_windgazer_debug?this.console:nl_windgazer_console;
-})();
-
-(function() {
 
 	/**
 	 * This is the class that stores and retreives the comics data.
@@ -42,14 +24,21 @@
 			this.entry = null;
 			this.comics = new Array();
 			this.settings = null;
+			this.gui = false;
 			
 			var self = this;
 			
+			
+			//When authentication has finished...
 			window.ce.attachEvent( ON_AUTH_SUCCESS, function() {
 				self.authSuccess();
 			});
 
-			this.settings = new Settings("nl.windgazer.comicreader");
+			//Since, among things, the settings take care of auth, can't sun this until the GUI is done loading...
+			Events.attach(window, "load", function() {
+				self.settings = new Settings("nl.windgazer.comicreader");
+				self.gui = true;
+			});
 		
 		},
 		authSuccess:function() {
