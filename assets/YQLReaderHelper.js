@@ -38,7 +38,7 @@ YQLReaderHelper.prototype = {
 	 * @param {Object} params a JSON construct of {"url":url,"xpath":xpath}
 	 */
 	getIMGYQLQuery:function(params) {
-		var yql = "select alt, src, rel, href, class, title from html where url = '" + params.url + "'";
+		var yql = "select alt, id, src, rel, href, class, title from html where url = '" + params.url + "'";
 		if (params.xpath) {
 			yql += " and xpath='";
 			yql += params.xpath;
