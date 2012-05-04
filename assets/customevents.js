@@ -30,7 +30,7 @@
 
 		fireEvent: function( eid, eInfo ) {
 			
-			Console.log("Firing '" + eid + "' event.")
+			Console.log("Firing '" + eid + "' event.", eid, eInfo);
 
 			var reg = registry[ this.id ];
 			if ( reg ) {
