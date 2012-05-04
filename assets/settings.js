@@ -33,7 +33,7 @@
 	 * @class
 	 * @augments Class
 	 */
-	this.Settings = Class.extend(
+	var Settings = Class.extend(
 	/** @lends Settings */
 	{
 	
@@ -266,4 +266,5 @@
 	
 	});
 
+	this.Settings = new Settings("nl.windgazer.ComicReaderPI");
 })();
