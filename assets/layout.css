@@ -125,25 +125,37 @@ input, table, tr, td {
 
 /*Content Replacement*/
 
-#controls > :first-child:hover a::before {
+#controls > :first-child:hover a::before,
+#controls > :first-child+li:hover a::before,
+#controls > :first-child+li+li:hover a::before {
+	display: block;
+	text-indent: 0;
 	position: absolute;
 	content: ">>";
 	line-height: 1em;
 	width: 100%;
-	text-indent: 0;
+	top: 50%;
+	margin-top: -0.5em;
+	font-weight: bolder;
+	z-index: 80;
 }
 
 #controls > :first-child+li:hover a::before {
-	position: absolute;
+	margin-left: -4em;
 	content: "<";
-	text-indent: 1.5em;
+}
+
+.orientation_portrait #controls > :first-child+li:hover a::before {
+	margin-left: -2em;
 }
 
 #controls > :first-child+li+li:hover a::before {
-	position: absolute;
-	right: 0;
+	margin-left: 4em;
 	content: ">";
-	text-indent: -3.5em;
+}
+
+.orientation_portrait #controls > :first-child+li+li:hover a::before {
+	margin-left: 2em;
 }
 
 /** /Controls **/
@@ -251,7 +263,7 @@ h2 {
 	left: 0;
 	right: 0;
 	background: rgba(128, 128, 128, 0.5);
-	height: 100px;
+	height: 2em;
 	z-index: 1;
 }
 
@@ -267,6 +279,7 @@ figure {
 	position: relative;
 	z-index: 10;
 	background: black;
+	box-shadow: 0 -0.25em 0.5em 0 rgba(0, 0, 0, 0.75),0 -0.05em 0.1em 0 rgba(128, 128, 255, 0.75);
 	-webkit-transition: margin 500ms ease-in-out;
 	-moz-transition: margin 500ms ease-in-out;
 	-o-transition: margin 500ms ease-in-out;
@@ -275,7 +288,7 @@ figure {
 }
 
 .menuEnabled figure {
-	margin-top: 100px;
+	margin-top: 2em;
 }
 
 #ComicReader {
@@ -421,8 +434,8 @@ h1,
 
 #controls a::before,
 #controls > :first-child+li+li+li > a:hover {
-	color: rgba(32,32,32,1);
-	text-shadow: 0 0 0.75em #FFA;
+	color: rgba(32,32,32,0.75);
+	text-shadow: #8F8 0 0.1em 0.35em;
 }
 /** /Glow And Glow Animation **/
 

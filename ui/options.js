@@ -132,5 +132,20 @@
 		});
 
 	});
+	
+	window.Options = {
+		debug: null,
+		isDebug: function() {
+			//Only do the complex stuff once...
+			if ( this.debug === null ) {
+
+				var b = document.getElementsByTagName("body")[0];
+				debug = b.className.indexOf("debugOption")>=0;
+
+			}
+			
+			return this.debug;
+		}
+	};
 
 })();

@@ -2,8 +2,8 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<meta name="viewport" content="user-scalable=no,width=device-width" />
-	<title>HTML5Reader</title>
+	<meta name="viewport" content="width=device-width,height=device-height,user-scalable=no,initial-scale=1.0">
+	<title>ComicReader PI</title>
 
 	<script src="../events-2.0.js"></script>
 	<script src="assets/Resolutions.js"></script>
@@ -122,36 +122,25 @@
 			}
 		} );
 		
-		var bounceCount = 0;
-		var bounceReset = false;
-		
-		Events.attach( window, "mousewheel", function( e ) {
+		function screenEdgeEventHandler( e ) {
 			e = e ? e : window.event;
 			var wheelData = e.detail ? e.detail * -1 : e.wheelDelta / 40;
 			var body = document.getElementsByTagName("body")[0];
 
 			//console.log("Mousewheel", e, wheelData);
 			if ( wheelData > 0 && window.scrollY <= 0 ) {
-				if (bounceCount < 3) {
-					bounceCount++;
-					if (bounceReset) {
-						window.clearTimeout(bounceReset);
-					}
-					bounceReset = window.setTimeout(function() {
-						bounceCount = 0;
-						window.clearTimeout(bounceReset);
-						bounceReset = false;
-					}, 2000);
-				} else {
-					console.log( "Show top menu" );
+				if (wheelData > 6) {
+					if ( Options.isDebug() ) console.debug( "Show top menu" );
 					body.className += " menuEnabled";
 				}
 			} else if ( wheelData < 0 ) {
-				console.log( "Hide top menu" );
-				bounceCount = 0;
+				if ( Options.isDebug() ) console.debug( "Hide top menu" );
 				body.className = body.className.replace(/ ?\bmenuEnabled\b/g, "");
 			}
-		} );
+		}
+		
+		Events.attach( window, "mousewheel", screenEdgeEventHandler );
+		Events.attach( window, "DOMMouseScroll", screenEdgeEventHandler );
 	})();
 	</script>
 	<link type="text/css" rel="stylesheet" href="assets/layout.css" />
@@ -168,11 +157,11 @@
 		<li><a rel="switchComic" href="#ComicReader">Get Latest Image</a></li>
 		<li><a rel="prevEntry" href="#ComicReader">Get Previous Image</a></li>
 		<li><a rel="nextEntry" href="#ComicReader">Get Next Image</a></li>
-		<li><a rel="overlay" href="#options">&#x3A9;</a></li>
-		<li><select id="comicSelector"></select></li>
 	</ul>
 	
 	<aside id="menu">
+		<select id="comicSelector"></select>
+		<a rel="overlay" href="#options">Options</a>
 	</aside>
 
 	<div id="options">
