@@ -44,8 +44,14 @@ if ( typeof nl === "undefined" ) { nl = {}; }; if ( typeof nl.windgazer === "und
 		 * @see Comic
 		 */
 		fetchLast: function ( ) {
+			
+			console.log("Attempting to figure our what the last comic was.");
+			
+			var lastURL = this.getLastURL(  ) || this.getLatestURL(  );
+			
+			console.log("Result of figuring out last comic is", lastURL);
 
-			return this.fetchByURL( this.getLatestURL(  ) );
+			return this.fetchByURL( lastURL );
 
 		},
 

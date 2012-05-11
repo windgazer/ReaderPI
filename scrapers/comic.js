@@ -89,6 +89,17 @@ if ( typeof nl === "undefined" ) { nl = {}; }; if ( typeof nl.windgazer === "und
 			throw { code:5282727478501, msg: "Method not implemented :(" };
 
 		},
+
+		/**
+		 * 
+		 * Get the last read URL for this comic from history.
+		 * 
+		 */		
+		getLastURL: function (  ) {
+
+			return History.retreiveURL( this.id );
+
+		},
 		
 		getUID: function (  ) {
 
