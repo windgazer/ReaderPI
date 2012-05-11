@@ -34,10 +34,6 @@ input, table, tr, td {
 	top: 1em;
 }
 
-#controls li {
-	background: rgba(255, 128, 0, 0.5);
-}
-
 #controls > :first-child,
 #controls > :first-child+li,
 #controls > :first-child+li+li {
@@ -144,29 +140,23 @@ input, table, tr, td {
 	position: absolute;
 	content: ">>";
 	line-height: 1em;
-	width: 100%;
 	top: 50%;
+	left: 0;
+	right: 0;
+	padding: 0 1.5em;
 	margin-top: -0.5em;
 	font-weight: bolder;
 	z-index: 80;
 }
 
 #controls > :first-child+li:hover a::before {
-	margin-left: -4em;
 	content: "<";
-}
-
-.orientation_portrait #controls > :first-child+li:hover a::before {
-	margin-left: -2em;
+	text-align: left;
 }
 
 #controls > :first-child+li+li:hover a::before {
-	margin-left: 4em;
 	content: ">";
-}
-
-.orientation_portrait #controls > :first-child+li+li:hover a::before {
-	margin-left: 2em;
+	text-align: right;
 }
 
 /** /Controls **/
