@@ -122,14 +122,34 @@
 			}
 		} );
 		
+		var bounceCount = 0;
+		var bounceReset = false;
+		
 		Events.attach( window, "mousewheel", function( e ) {
 			e = e ? e : window.event;
 			var wheelData = e.detail ? e.detail * -1 : e.wheelDelta / 40;
+			var body = document.getElementsByTagName("body")[0];
+
 			//console.log("Mousewheel", e, wheelData);
 			if ( wheelData > 0 && window.scrollY <= 0 ) {
-				console.log( "Show top menu" );
+				if (bounceCount < 3) {
+					bounceCount++;
+					if (bounceReset) {
+						window.clearTimeout(bounceReset);
+					}
+					bounceReset = window.setTimeout(function() {
+						bounceCount = 0;
+						window.clearTimeout(bounceReset);
+						bounceReset = false;
+					}, 2000);
+				} else {
+					console.log( "Show top menu" );
+					body.className += " menuEnabled";
+				}
 			} else if ( wheelData < 0 ) {
 				console.log( "Hide top menu" );
+				bounceCount = 0;
+				body.className = body.className.replace(/ ?\bmenuEnabled\b/g, "");
 			}
 		} );
 	})();
@@ -138,10 +158,11 @@
 </head>
 <body>
 
-	<h1>HTML5 Web-Comic Reader, testing shit...</h1>
+	<figure>
+		<h1>HTML5 Web-Comic Reader, testing shit...</h1>
 	
-	<div id="menu">
-	</div>
+		<div id="ComicReader"><img src="about:blank" id="comicImage" /></div>
+	</figure>
 
 	<ul id="controls">
 		<li><a rel="switchComic" href="#ComicReader">Get Latest Image</a></li>
@@ -150,8 +171,9 @@
 		<li><a rel="overlay" href="#options">&#x3A9;</a></li>
 		<li><select id="comicSelector"></select></li>
 	</ul>
-
-	<div id="ComicReader"><img src="about:blank" id="comicImage" /></div>
+	
+	<aside id="menu">
+	</aside>
 
 	<div id="options">
 

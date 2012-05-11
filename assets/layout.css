@@ -242,8 +242,41 @@ h2 {
 /** /Options **/
 
 /**
+	Menu
+*/
+
+#menu {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	background: rgba(128, 128, 128, 0.5);
+	height: 100px;
+	z-index: 1;
+}
+
+/** /Menu **/
+
+/**
 	Reader
 */
+
+figure {
+	margin: 0;
+	padding: 0;
+	position: relative;
+	z-index: 10;
+	background: black;
+	-webkit-transition: margin 500ms ease-in-out;
+	-moz-transition: margin 500ms ease-in-out;
+	-o-transition: margin 500ms ease-in-out;
+	-ms-transition: margin 500ms ease-in-out;
+	transition: margin 500ms ease-in-out;
+}
+
+.menuEnabled figure {
+	margin-top: 100px;
+}
 
 #ComicReader {
 	background: #333;
@@ -255,13 +288,13 @@ h2 {
 	vertical-align: middle;
 	position: relative;
 	margin: 1em;
-	-webkit-transition: all 1s ease-out;
+	-webkit-transition: all 500ms ease-out;
 	padding: 0.75em 0;
 	opacity: 1;
 }
 
 #ComicReader > .entry {
-	-webkit-transition: opacity 1s ease-out;
+	-webkit-transition: opacity 500ms ease-out;
 	position: absolute;
 	top: 2%;
 	opacity: 0;
@@ -276,7 +309,7 @@ h2 {
 }
 
 #ComicReader > .active {
-	-webkit-transition: opacity 1s ease-in;
+	-webkit-transition: opacity 500ms ease-in;
 	position: relative;
 	opacity: 1;
 	margin-top: 0;
@@ -303,7 +336,7 @@ h2 {
 	min-height: 100%;
 	text-shadow: 0 0 0.75em #FF8;
 	border: 0.1em solid rgba(0,0,0,0.9);
-	z-index: 50;
+	z-index: 75;
 }
 
 
