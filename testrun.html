@@ -10,6 +10,7 @@
 	<script src="assets/sji.js"></script>
 	<script src="assets/customevents.js"></script>
 	<script src="assets/linklistener.js"></script>
+	<script src="assets/swipe.js"></script>
 
 	<script src="scrapers/yqlhelper.js"></script>
 	<script src="scrapers/entry.js"></script>
@@ -19,11 +20,14 @@
 
 	<script src="assets/settings/settings.delicious.bookmarks.js"></script>
 	<script src="assets/settings.js"></script>
+	<script src="assets/history.js"></script>
 	<script src="ui/ajaxhelper.js"></script>
 	<script src="ui/options.js"></script>
 	<script src="ui/auth.js"></script>
 
 	<script type="text/javascript">
+	(function() {
+
 		var MenageA3ReaderComic = new nl.windgazer.YQLComic(
 			(943<<16) + 1,
 			"Menage a 3"
@@ -61,7 +65,6 @@
 				}
 			}
 		);
-
 		var PennyArcadeReaderComic = new nl.windgazer.YQLComic(
 				(943<<16) + 3,
 				"Penny Arcade",
@@ -74,10 +77,10 @@
 						return ( entry.config["next"] && ( entry.config["next"].length - PennyArcadeReaderComic.params["URL"].length ) > 2 );
 					}
 				}
-			);
+		);
 
 		function initReader() {
-			PennyArcadeReaderComic.fetchLatest(  );
+			PennyArcadeReaderComic.fetchLast(  );
 		}
 		
 		ce.attachEvent( window.ON_AUTH_SUCCESS, initReader);
@@ -91,20 +94,24 @@
 			document.getElementById("comicImage").src = data.entry.getImgURL();
 
 		} );
-
-		LinkListener.addHandler( "prevEntry", function() {
+		
+		function fetchPrevious() {
 			var r = nl.windgazer.Reader, c = r.getComic(), e = r.getEntry();
 			if ( e.getPrevURL(  ) ) {
 				c.fetchByURL ( e.getPrevURL(  ) );
 			}
-		} );
-
-		LinkListener.addHandler( "nextEntry", function() {
+		}
+		
+		function fetchNext() {
 			var r = nl.windgazer.Reader, c = r.getComic(), e = r.getEntry();
 			if ( e.getNextURL(  ) ) {
 				c.fetchByURL ( e.getNextURL(  ) );
 			}
-		} );
+		}
+
+		LinkListener.addHandler( "prevEntry", fetchPrevious );
+
+		LinkListener.addHandler( "nextEntry", fetchNext );
 		
 		LinkListener.addHandler( "switchComic", function() {
 			var c = nl.windgazer.Reader.getComic();
@@ -114,12 +121,27 @@
 				PennyArcadeReaderComic.fetchLatest(  );
 			}
 		} );
+		
+		Events.attach( window, "mousewheel", function( e ) {
+			e = e ? e : window.event;
+			var wheelData = e.detail ? e.detail * -1 : e.wheelDelta / 40;
+			//console.log("Mousewheel", e, wheelData);
+			if ( wheelData > 0 && window.scrollY <= 0 ) {
+				console.log( "Show top menu" );
+			} else if ( wheelData < 0 ) {
+				console.log( "Hide top menu" );
+			}
+		} );
+	})();
 	</script>
 	<link type="text/css" rel="stylesheet" href="assets/layout.css" />
 </head>
 <body>
 
 	<h1>HTML5 Web-Comic Reader, testing shit...</h1>
+	
+	<div id="menu">
+	</div>
 
 	<ul id="controls">
 		<li><a rel="switchComic" href="#ComicReader">Get Latest Image</a></li>
