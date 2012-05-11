@@ -30,6 +30,14 @@ input, table, tr, td {
 	z-index: 25;
 }
 
+.menuEnabled #controls {
+	top: 1em;
+}
+
+#controls li {
+	background: rgba(255, 128, 0, 0.5);
+}
+
 #controls > :first-child,
 #controls > :first-child+li,
 #controls > :first-child+li+li {
@@ -75,9 +83,11 @@ input, table, tr, td {
 	position: absolute;
 }
 
+/*Top half*/
+
 /*Top Sixth*/
 
-#controls > :first-child+li+li+li {
+#none {
 	top: 0;
 	bottom: 83%;/*17*/
 	line-height: 100%;
@@ -86,7 +96,7 @@ input, table, tr, td {
 
 /*Top Third*/
 
-#controls > :first-child {
+#none {
 	top: 17%;
 	bottom: 50%;
 }
@@ -102,6 +112,7 @@ input, table, tr, td {
 
 /*Full height*/
 
+#controls > :first-child,
 #controls > :first-child+li,
 #controls > :first-child+li+li {
 	top: 0;
@@ -264,7 +275,15 @@ h2 {
 	right: 0;
 	background: rgba(128, 128, 128, 0.5);
 	height: 2em;
+	text-align: center;
 	z-index: 1;
+}
+
+#menu a {
+	color: white;
+	font-size: 0.75em;
+	text-transform: lowercase;
+	text-decoration: none;
 }
 
 /** /Menu **/
