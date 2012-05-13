@@ -1,3 +1,9 @@
+/**
+ * This file contains the main Comic Class, I've included a singleton Comics to register all known implementations.
+ * 
+ * @fileoverview
+ */
+
 if ( typeof nl === "undefined" ) { nl = {}; }; if ( typeof nl.windgazer === "undefined" ) {  nl.windgazer = {}; };
 
 ( function ( domain ) {
@@ -108,5 +114,95 @@ if ( typeof nl === "undefined" ) { nl = {}; }; if ( typeof nl.windgazer === "und
 		}
 
 	} );
+
+	/**
+	 * Singleton Class to store all instantiated comics in.
+	 * 
+	 * @class
+	 */	
+	domain.Comics = {
+
+		comics : [],
+
+		/**
+		 * Returns the position in internal Storage for a comic with the provided unique identifier.
+		 * If no comic is found, this method returns -1.
+		 * @private
+		 */
+		getComicPosition : function ( id ) {
+			for (var i = 0; i < this.comics.length; i++) {
+				var c = this.comics[i];
+				if ( c.getId() === id ) return i;
+			}
+			return -1;
+		},
+
+		/**
+		 * Add a comic to the internal storage
+		 * 
+		 * @argument {String} id The unique identifier for this comic.
+		 * @argument {Comic} comic The comic to store with this id.
+		 * 
+		 * @return {Comic}
+		 */
+		addComic : function ( id, comic ) {
+
+			this.comics.push( comic );
+
+			return comic;
+
+		},
+
+		/**
+		 * Remove a comic from internal storage.
+		 * 
+		 * @argument {String} id The unique identifier under which the comic was stored.
+		 * 
+		 * @return {Comic}
+		 */
+		removeComic : function ( id ) {
+
+			var p = this.getComicPosition( id );
+			
+			if ( p  >= 0 ) {
+				return this.comics.splice( p, 1 );
+			}
+
+			return comic;
+
+		},
+
+		/**
+		 * Retreive from storage a comic by it's unique id.
+		 * 
+		 * @argument {String} id The unique identifier for the comic
+		 * 
+		 * @return {Comic}
+		 * 
+		 */
+		getComic : function ( id ) {
+			var uid = "" + id;
+			for (var i = 0; i < this.comics.length; i++) {
+				var c = this.comics[i];
+				var cid = "" + c.getId();
+				if ( uid === cid ) return c;
+			}
+			return null;
+		},
+
+		/**
+		 * Returns an array containing all the stored comics.
+		 * 
+		 * @return {Comic[]}
+		 */		
+		getComics : function (  ) {
+
+			return this.comics;
+
+		}
+
+	};
+	
+	window.Comics = domain.Comics;
 
 } )( nl.windgazer );

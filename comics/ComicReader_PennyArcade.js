@@ -1,5 +1,6 @@
 (function(){
-	var PennyArcadeReaderComic = new YQLOnlineReaderComic(
+	var PennyArcadeReaderComic = new nl.windgazer.YQLComic(
+		(943<<16) + 3,
 		"Penny Arcade",
 		"http://penny-arcade.com/comic",
 		"//div[@class=\"contentArea\"]//img|//ul[@class=\"newsNav top\"]//a[@class=\"btnPrev btn\"]|//ul[@class=\"newsNav top\"]//a[@class=\"btnNext btn\"]",
@@ -12,5 +13,6 @@
 			}
 		}
 	);
-	ComicReader.addComic(PennyArcadeReaderComic);
+
+	Comics.addComic(PennyArcadeReaderComic.getId(), PennyArcadeReaderComic);
 })();

@@ -23,131 +23,36 @@
 	<script src="assets/history.js"></script>
 	<script src="ui/ajaxhelper.js"></script>
 	<script src="ui/options.js"></script>
-	<script src="ui/auth.js"></script>
+	<script src="ui/uinavhelper.js"></script>
+
+	<script src="comics/ComicReader_GirlGenius.js"></script>
+	<script src="comics/ComicReader_MenageA3.js"></script>
+	<script src="comics/ComicReader_PennyArcade.js"></script>
+	<script src="comics/ComicReader_PVPOnline.js"></script>
+	<script src="comics/ComicReader_XKCD.js"></script>
 
 	<script type="text/javascript">
 	(function() {
 
-		var MenageA3ReaderComic = new nl.windgazer.YQLComic(
-			(943<<16) + 1,
-			"Menage a 3"
-			, "http://www.menagea3.net/"
-			, "//div[@id=\"cc\"]//img|//a[@id=\"cndprev\"]|//a[@id=\"cniprev\"]|//a[@id=\"cndnext\"]"
-			, {
-				/**
-				 * Sorting entry url versus link,  if the first one is the link, it's a previous link :)
-				 */
-				getLinkIsPrev: function( link, jsonData, url, comic ) {
-					return jsonData.query.results.a.id && jsonData.query.results.a.id.indexOf("prev") >= 0;
-				}
-			}
-		);
-		var GirlGeniusReaderComic = new nl.windgazer.YQLComic(
-			(943<<16) + 2,
-			"Girl Genius"
-			, "http://www.girlgeniusonline.com/comic.php"
-			, "//img[@alt=\"Comic\"]|//table[@id=\"MainTable\"]/tr[2]/td[1]//a[2]|//table[@id=\"MainTable\"]/tr[2]/td[1]//a[3]"
-			, {
-				/**
-				 * Sorting entry url versus link,  if the first one is the link, it's a previous link :)
-				 */
-				getLinkIsPrev: function( link, jsonData, url, comic ) {
-					//No request params means latest comic and link is then always to previous...
-					if (url.indexOf("?") < 1) return true;
-					
-					//Else sort current url versus the link...
-					var urls = [url, link.href];
-					urls.sort();
-					
-					//if url does not equal the first link after sort, the link is to previous comic...
-					var isPrev = url != urls[0];
-					return isPrev;
-				}
-			}
-		);
-		var PennyArcadeReaderComic = new nl.windgazer.YQLComic(
-				(943<<16) + 3,
-				"Penny Arcade",
-				"http://penny-arcade.com/comic",
-				"//div[@class=\"contentArea\"]//img|//ul[@class=\"newsNav top\"]//a[@class=\"btnPrev btn\"]|//ul[@class=\"newsNav top\"]//a[@class=\"btnNext btn\"]",
-				{
-					getHasNextEntry : function( entry ) {
-						Console.log( "Attempting to determine next entry existence for Penny Arcade" );
-						Console.log( entry.config["next"] );
-						return ( entry.config["next"] && ( entry.config["next"].length - PennyArcadeReaderComic.params["URL"].length ) > 2 );
-					}
-				}
-		);
-
 		function initReader() {
-			PennyArcadeReaderComic.fetchLast(  );
+			Comics.getComics()[0].fetchLast(  );
 		}
 		
 		ce.attachEvent( window.ON_AUTH_SUCCESS, initReader);
 		ce.attachEvent( window.ON_AUTH_CANCELED, initReader);
-		
-		ce.attachEvent( nl.windgazer.COMIC_EVENT_ID, function( eid, data ) {
-			
-			nl.windgazer.Reader.setEntry( data.entry );
-			nl.windgazer.Reader.setComic( data.comic );
-
-			document.getElementById("comicImage").src = data.entry.getImgURL();
-
-		} );
-		
-		function fetchPrevious() {
-			var r = nl.windgazer.Reader, c = r.getComic(), e = r.getEntry();
-			if ( e.getPrevURL(  ) ) {
-				c.fetchByURL ( e.getPrevURL(  ) );
-			}
-		}
-		
-		function fetchNext() {
-			var r = nl.windgazer.Reader, c = r.getComic(), e = r.getEntry();
-			if ( e.getNextURL(  ) ) {
-				c.fetchByURL ( e.getNextURL(  ) );
-			}
-		}
-
-		LinkListener.addHandler( "prevEntry", fetchPrevious );
-
-		LinkListener.addHandler( "nextEntry", fetchNext );
-		
-		LinkListener.addHandler( "switchComic", function() {
-			var c = nl.windgazer.Reader.getComic();
-			if ( c && c.getId() == PennyArcadeReaderComic.getId() ) {
-				GirlGeniusReaderComic.fetchLast(  );
-			} else {
-				PennyArcadeReaderComic.fetchLast(  );
-			}
-		} );
-		
-		function screenEdgeEventHandler( e ) {
-			e = e ? e : window.event;
-			var wheelData = e.detail ? e.detail * -1 : e.wheelDelta / 30;
-			var body = document.getElementsByTagName("body")[0];
-
-			if ( wheelData > 0 && window.scrollY <= 0 ) {
-				if (wheelData > 6) {
-					if ( Options.isDebug() ) console.debug( "Show top menu" );
-					body.className += " menuEnabled";
-				}
-			} else if ( wheelData < 0 ) {
-				if ( Options.isDebug() ) console.debug( "Hide top menu" );
-				body.className = body.className.replace(/ ?\bmenuEnabled\b/g, "");
-			}
-		}
-		
-		Events.attach( window, "mousewheel", screenEdgeEventHandler );
-		Events.attach( window, "DOMMouseScroll", screenEdgeEventHandler );
 	})();
+
 	</script>
+
+	<!-- This inclusion starts the whole process, it needs to be last in line :) -->
+	<script src="ui/auth.js"></script>
+
 	<link type="text/css" rel="stylesheet" href="assets/layout.css" />
 </head>
 <body>
 
 	<figure>
-		<h1>HTML5 Web-Comic Reader, testing shit...</h1>
+		<h1>HTML5 Web-Comic Reader</h1>
 	
 		<div id="ComicReader"><img src="about:blank" id="comicImage" /></div>
 	</figure>

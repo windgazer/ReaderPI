@@ -1,6 +1,7 @@
 (function(){
 
-	var MenageA3ReaderComic = new YQLOnlineReaderComic(
+	var MenageA3ReaderComic = new nl.windgazer.YQLComic(
+		(943<<16) + 1,
 		"Menage a 3"
 		, "http://www.menagea3.net/"
 		, "//div[@id=\"cc\"]//img|//a[@id=\"cndprev\"]|//a[@id=\"cniprev\"]|//a[@id=\"cndnext\"]"
@@ -14,5 +15,5 @@
 		}
 	);
 
-	ComicReader.addComic(MenageA3ReaderComic);
+	Comics.addComic(MenageA3ReaderComic.getId(), MenageA3ReaderComic);
 })();

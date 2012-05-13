@@ -1,5 +1,6 @@
 (function(){
-	var GirlGeniusReaderComic = new YQLOnlineReaderComic(
+	var GirlGeniusReaderComic = new nl.windgazer.YQLComic(
+		(943<<16) + 2,
 		"Girl Genius"
 		, "http://www.girlgeniusonline.com/comic.php"
 		, "//img[@alt=\"Comic\"]|//table[@id=\"MainTable\"]/tr[2]/td[1]//a[2]|//table[@id=\"MainTable\"]/tr[2]/td[1]//a[3]"
@@ -22,5 +23,5 @@
 		}
 	);
 	
-	ComicReader.addComic(GirlGeniusReaderComic);
+	Comics.addComic(GirlGeniusReaderComic.getId(), GirlGeniusReaderComic);
 })();
