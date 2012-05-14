@@ -134,6 +134,14 @@ if ( typeof nl === "undefined" ) { nl = {}; }; if ( typeof nl.windgazer === "und
 
 			}
 			
+			if (prev ==="#") {
+				prev = null;
+			}
+			
+			if (next ==="#") {
+				next = null;
+			}
+			
 			return { prev: prev, next: next };
 
 		},
