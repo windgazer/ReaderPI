@@ -81,7 +81,12 @@
 	
 	ce.attachEvent( nl.windgazer.COMIC_FINISHED_LOADING, function(){
 		var b = document.getElementsByTagName("body")[0];
+		var ci = document.getElementById("comicImage");
 		b.className = b.className.replace(/ ?\binprogress\b/g, "");
+
+		ci.parentNode.className = ci.parentNode.className.replace( / ?\bimg(L|P)\w+\b/g,"");
+		var landscape = ci.height / ci.width  < 1;
+		ci.parentNode.className += landscape?" imgLandscape":" imgPortrait";
 	});
 
 	Events.attach( window, "load", function() {

@@ -344,7 +344,7 @@ figure {
 	vertical-align: middle;
 }
 
-#ComicReader .imgPortait:last-child img,
+#ComicReader .imgPortrait:last-child img,
 #ComicReader .imgLandscape:last-child img {
 }
 
@@ -364,29 +364,30 @@ figure {
 
 /*React on visible options*/
 
-.ls-p-limit-height.orientation_landscape #ComicReader > .imgPortait img,
-.p-p-limit-height.orientation_portrait #ComicReader > .imgPortait img {
+.ls-p-limit-height.orientation_landscape #ComicReader.imgPortrait img,
+.p-p-limit-height.orientation_portrait #ComicReader.imgPortrait img {
 	max-height: 85%;
 }
 
-.ls-ls-limit-width.orientation_landscape #ComicReader > .imgLandscape img,
-.p-ls-limit-width.orientation_portrait #ComicReader > .imgLandscape img {
+.ls-ls-limit-width.orientation_landscape #ComicReader.imgLandscape img,
+.p-ls-limit-width.orientation_portrait #ComicReader.imgLandscape img {
 	max-width: 95%;
 }
 
-.ls-ls-force-height.orientation_landscape #ComicReader > .imgLandscape img {
+.ls-ls-force-height.orientation_landscape #ComicReader.imgLandscape img {
 	height: 85%;
 }
 
-.p-p-force-height.orientation_portrait #ComicReader > .imgPortait img {
+.p-p-force-height.orientation_portrait #ComicReader.imgPortrait img {
 	min-height: 85%;
 }
 
-.p-p-force-width.orientation_portrait #ComicReader > .imgPortait img {
+.p-p-force-width.orientation_portrait #ComicReader.imgPortrait img,
+.ls-p-force-width.orientation_landscape #ComicReader.imgPortrait img {
 	width: 95%;
 }
 
-.ls-ls-force-width.orientation_landscape #ComicReader > .imgLandscape img {
+.ls-ls-force-width.orientation_landscape #ComicReader.imgLandscape img {
 	min-width: 95%;
 }
 
