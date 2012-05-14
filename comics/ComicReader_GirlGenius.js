@@ -8,7 +8,7 @@
 			/**
 			 * Sorting entry url versus link,  if the first one is the link, it's a previous link :)
 			 */
-			getLinkIsPrev: function( link, jsonData, url, comic ) {
+			getLinkIsPrev: function( link, url, comic ) {
 				//No request params means latest comic and link is then always to previous...
 				if (url.indexOf("?") < 1) return true;
 				

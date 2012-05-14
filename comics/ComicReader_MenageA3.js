@@ -7,10 +7,10 @@
 		, "//div[@id=\"cc\"]//img|//a[@id=\"cndprev\"]|//a[@id=\"cniprev\"]|//a[@id=\"cndnext\"]"
 		, {
 			/**
-			 * Sorting entry url versus link,  if the first one is the link, it's a previous link :)
+			 * The id of the links contain wether they are next or previous links...
 			 */
 			getLinkIsPrev: function( link, jsonData, url, comic ) {
-				return jsonData.query.results.a.id && jsonData.query.results.a.id.indexOf("prev") >= 0;
+				return link.id && link.id.indexOf("prev") >= 0;
 			}
 		}
 	);
