@@ -45,11 +45,11 @@ if ( typeof nl === "undefined" ) { nl = {}; }; if ( typeof nl.windgazer === "und
 		 */
 		fetchLast: function ( ) {
 			
-			console.log("Attempting to figure our what the last comic was.");
+			if ( Options.isDebug() ) console.log("Attempting to figure our what the last comic was.");
 			
 			var lastURL = this.getLastURL(  ) || this.getLatestURL(  );
 			
-			console.log("Result of figuring out last comic is", lastURL);
+			if ( Options.isDebug() ) console.log("Result of figuring out last comic is", lastURL);
 
 			return this.fetchByURL( lastURL );
 
@@ -92,7 +92,7 @@ if ( typeof nl === "undefined" ) { nl = {}; }; if ( typeof nl.windgazer === "und
 
 			var entry = context.comic.convertFromJSON( jsonData, context );
 
-			console.log("This is where we oughta call the PubSub system", entry, context, jsonData);
+			if ( Options.isDebug() ) console.log("This is where we oughta call the PubSub system", entry, context, jsonData);
 			context.entry = entry;
 
 			ce.fireEvent( domain.COMIC_EVENT_ID, context );

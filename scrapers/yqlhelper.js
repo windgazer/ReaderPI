@@ -91,7 +91,7 @@ if ( typeof nl === "undefined" ) { nl = {}; }; if ( typeof nl.windgazer === "und
 
 			//Using JSONP to it's limit, also known as the poor man's AJAX ;)
 			window[cb] = function( data ) {
-				console.log("Calling callback method", cb, data);
+				if ( Options.isDebug() ) console.log("Calling callback method", cb, data);
 				callback( data, values.context );
 			}
 			
@@ -101,9 +101,9 @@ if ( typeof nl === "undefined" ) { nl = {}; }; if ( typeof nl.windgazer === "und
 			script.type = "text/javascript";
 			script.src = url;
 			
-			console.debug( query );
-			console.debug( values );
-			console.debug( url );
+			if ( Options.isDebug() ) console.debug( query );
+			if ( Options.isDebug() ) console.debug( values );
+			if ( Options.isDebug() ) console.debug( url );
 			
 			document.documentElement.appendChild( script );
 			
