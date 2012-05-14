@@ -7,8 +7,12 @@
 if ( typeof nl === "undefined" ) { nl = {}; }; if ( typeof nl.windgazer === "undefined" ) {  nl.windgazer = {}; };
 
 ( function ( domain ) {
+	
+	domain.COMIC_FETCH_INPROGRESS	= "nl.windgazer.FetchingEntry";
 
-	domain.COMIC_EVENT_ID = "nl.windgazer.EntryReceived";
+	domain.COMIC_FINISHED_LOADING	= "nl.windgazer.ComicImageOnLoad";
+
+	domain.COMIC_EVENT_ID			= "nl.windgazer.EntryReceived";
 
 	/**
 	 * Basic 'interface' for implementing Comics :). None of the methods are actually

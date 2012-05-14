@@ -61,6 +61,7 @@ if ( typeof nl === "undefined" ) { nl = {}; }; if ( typeof nl.windgazer === "und
 		fetchByURL: function( URL ) {
 			Console.log("Getting entry by URL for '" + URL + "'");
 			var uid = this.getUID(  ), c = this;
+			ce.fireEvent ( domain.COMIC_FETCH_INPROGRESS, {uid: uid, comic: c, url: URL});
 
 			var values = {
 				URL: URL,

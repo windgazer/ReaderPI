@@ -101,6 +101,10 @@ if ( typeof nl === "undefined" ) { nl = {}; }; if ( typeof nl.windgazer === "und
 			script.type = "text/javascript";
 			script.src = url;
 			
+			console.debug( query );
+			console.debug( values );
+			console.debug( url );
+			
 			document.documentElement.appendChild( script );
 			
 			return new YQLRequest( script, cb );

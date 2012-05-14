@@ -73,6 +73,16 @@
 
 		c.fetchLast();
 	}
+	
+	ce.attachEvent( nl.windgazer.COMIC_FETCH_INPROGRESS, function(){
+		var b = document.getElementsByTagName("body")[0];
+		b.className += " inprogress";
+	});
+	
+	ce.attachEvent( nl.windgazer.COMIC_FINISHED_LOADING, function(){
+		var b = document.getElementsByTagName("body")[0];
+		b.className = b.className.replace(/ ?\binprogress\b/g, "");
+	});
 
 	Events.attach( window, "load", function() {
 
@@ -85,6 +95,13 @@
 		}
 		
 		Events.attach( cs, "change", selectNewComic );
+		
+		var ci = document.getElementById("comicImage");
+		Events.attach( ci, "load", function() {
+
+			ce.fireEvent( nl.windgazer.COMIC_FINISHED_LOADING, ci );
+
+		});
 
 	});
 

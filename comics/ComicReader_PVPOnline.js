@@ -2,8 +2,8 @@
 	var PVPOnlineReaderComic = new nl.windgazer.YQLComic(
 		(943<<16) + 4,
 		"PVP Online"
-		, "http://www.pvponline.com/"
-		, "//div[@id=\"comic\"]//img|//a[@rel=\"prev\"]|//a[@rel=\"next\"]"
+		, "http://pvponline.com/comic/"
+		, "//div[@class=\"post\"]//img|//a[contains(@*,\"prevBtn\") or contains(@*,\"nextBtn\")]"
 	);
 
 	Comics.addComic(PVPOnlineReaderComic.getId(), PVPOnlineReaderComic);
