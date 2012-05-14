@@ -269,13 +269,6 @@ h2 {
 	z-index: 1;
 }
 
-#menu a {
-	color: white;
-	font-size: 0.75em;
-	text-transform: lowercase;
-	text-decoration: none;
-}
-
 /** /Menu **/
 
 /**
@@ -460,3 +453,41 @@ h1,
 	background: rgba(0,0,0,0.5) -webkit-gradient(radial, 50% 50%, 30, 50% 50%, 800, from(rgba(0,0,0,0)), to(rgba(0,0,0,0.75)), color-stop(90%, rgba(0,0,0,0.75)));
 }
 
+
+/**
+ * 	CSS Parsing issues in Chrome!!!
+ *  For some reason, putting the below code higher up in the CSS made things go bump...
+ */
+
+
+#menu a[href="#options"] {
+	font-size: 0.35em;
+    text-indent: -100em;
+    width: 1.25em;
+    height: 1.25em;
+    border-radius: 50%;
+    border: 0.75em solid white;
+    margin: 1em;
+    position: absolute;
+    right: 1em;
+    top: 0em;
+    -webkit-transform:rotate(22.5deg);
+	display: block;
+}
+
+a[href="#options"]:before,
+a[href="#options"]:after {
+    content: ".";
+    display: block;
+    position: absolute;
+    right: -0.8em;
+    top: -0.8em;
+    width: 1.4em;
+    height: 1.4em;
+    border: 1em solid white;
+    border-radius: 0.5em;
+    border-width: 0.7em;
+}
+a[href="#options"]:after {
+    -webkit-transform:rotate(45deg);
+}
