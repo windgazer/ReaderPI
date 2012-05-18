@@ -33,18 +33,18 @@
 		}
 	}
 
+	function fetchLatest() {
+		var r = nl.windgazer.Reader, c = r.getComic(), e = r.getEntry();
+		if ( e.getNextURL(  ) ) { //No need to fire if we're already there...
+			c.fetchLatest (  );
+		}
+	}
+
 	LinkListener.addHandler( "prevEntry", fetchPrevious );
 
 	LinkListener.addHandler( "nextEntry", fetchNext );
 
-	LinkListener.addHandler( "switchComic", function() {
-		var c = nl.windgazer.Reader.getComic();
-		if ( c && c.getId() == PennyArcadeReaderComic.getId() ) {
-			GirlGeniusReaderComic.fetchLast(  );
-		} else {
-			PennyArcadeReaderComic.fetchLast(  );
-		}
-	} );
+	LinkListener.addHandler( "latestEntry", fetchLatest );
 
 	function screenEdgeEventHandler( e ) {
 		e = e ? e : window.event;
