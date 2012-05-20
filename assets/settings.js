@@ -37,7 +37,7 @@
 	/** @lends Settings */
 	{
 	
-		day:(24*60*60*1000),
+		day:( 24 * 60 * 60 * 1000 ),
 	
 		/**
 		 * Construct a Settings class with specific application pre-fix :)
