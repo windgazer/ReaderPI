@@ -11,6 +11,7 @@
 	<script src="assets/customevents.js"></script>
 	<script src="assets/linklistener.js"></script>
 	<script src="assets/swipe.js"></script>
+	<script src="assets/constants.js"></script>
 
 	<script src="scrapers/yqlhelper.js"></script>
 	<script src="scrapers/entry.js"></script>
@@ -30,19 +31,6 @@
 	<script src="comics/ComicReader_PennyArcade.js"></script>
 	<script src="comics/ComicReader_PVPOnline.js"></script>
 	<script src="comics/ComicReader_XKCD.js"></script>
-
-	<script type="text/javascript">
-	(function() {
-
-		function initReader() {
-			Comics.getComics()[0].fetchLast(  );
-		}
-		
-		ce.attachEvent( window.ON_AUTH_SUCCESS, initReader);
-		ce.attachEvent( window.ON_AUTH_CANCELED, initReader);
-	})();
-
-	</script>
 
 	<!-- This inclusion starts the whole process, it needs to be last in line :) -->
 	<script src="ui/auth.js"></script>

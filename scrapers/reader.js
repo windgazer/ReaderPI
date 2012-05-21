@@ -53,12 +53,32 @@ if ( typeof nl === "undefined" ) { nl = {}; }; if ( typeof nl.windgazer === "und
 		},
 
 		setComic: function ( arg ) {
+			
+			if ( History ) {
+
+				History.storeComicId( arg.getId() );
+
+			}
 
 			this.comic = arg;
 
 		},
 		
 		getComic: function (  ) {
+
+			//If not comic has been set, try to retreive one from History.
+			if ( !this.comic && History ) {
+
+				var id = History.retreiveComicId();
+				if ( id ) {
+					this.comic = Comics.getComic( id );
+				}
+
+			}
+			//If still no comic is found, retreive the first from the Comics singleton.
+			if ( !this.comic ) {
+				this.comic = Comics.getComics(  )[ 0 ];
+			}
 
 			return this.comic;
 
@@ -78,5 +98,18 @@ if ( typeof nl === "undefined" ) { nl = {}; }; if ( typeof nl.windgazer === "und
 		}
 
 	};
+
+	/**
+	 * Setting up the initialization routine.
+	 */
+	function initReader() {
+
+		var c = domain.Reader.getComic(); 
+		c.fetchLast(  );
+
+	}
+	
+	ce.attachEvent( Constants.ON_AUTH_SUCCESS, initReader);
+	ce.attachEvent( Constants.ON_AUTH_CANCELED, initReader);
 
 })( nl.windgazer );

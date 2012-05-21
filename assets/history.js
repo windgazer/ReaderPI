@@ -6,6 +6,8 @@
  * @fileoverview
  */
 (function(){
+	
+	window.KEY_LASTREAD_COMIC_ID = "LastReadComic.UID"; 
 
 	/**
 	 * Storage and retreival of historical data
@@ -32,17 +34,32 @@
 
 			return Settings.getUrl( id );
 
+		},
+		
+		storeComicId: function( id ) {
+
+			Settings.setPreference( KEY_LASTREAD_COMIC_ID, id );
+
+		},
+
+		/**
+		 * Get the last used comic id.
+		 */
+		retreiveComicId: function(  ) {
+
+			Settings.getPreference( KEY_LASTREAD_COMIC_ID );
+
 		}
 
 	}
 
 	//Capture the comic-received event and store it in history. By using this pubsub system the rest of the code
 	//does not need to know how history works, only that it's there to get the history from...
-	ce.attachEvent( nl.windgazer.COMIC_EVENT_ID, function( eid, data ) {
+	ce.attachEvent( Constants.COMIC_FINISHED_LOADING, function( eid, data ) {
 
-		if ( Options && Options.isDebug() ) console.log("Storing new entry", data.comic.id, data.URL);
+		if ( Options && Options.isDebug() ) console.log( "Storing new entry", data.comic.id, data.entry.getCurrentURL(  ) );
 
-		History.storeURL( data.comic.id, data.URL );
+		History.storeURL( data.comic.id, data.entry.getCurrentURL(  ) );
 
 	} );
 

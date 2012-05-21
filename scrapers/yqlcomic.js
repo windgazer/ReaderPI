@@ -61,7 +61,7 @@ if ( typeof nl === "undefined" ) { nl = {}; }; if ( typeof nl.windgazer === "und
 		fetchByURL: function( URL ) {
 			Console.log("Getting entry by URL for '" + URL + "'");
 			var uid = this.getUID(  ), c = this;
-			ce.fireEvent ( domain.COMIC_FETCH_INPROGRESS, {uid: uid, comic: c, url: URL});
+			ce.fireEvent ( Constants.COMIC_FETCH_INPROGRESS, {uid: uid, comic: c, url: URL});
 
 			var values = {
 				URL: URL,
@@ -95,7 +95,7 @@ if ( typeof nl === "undefined" ) { nl = {}; }; if ( typeof nl.windgazer === "und
 			if ( Options.isDebug() ) console.log("This is where we oughta call the PubSub system", entry, context, jsonData);
 			context.entry = entry;
 
-			ce.fireEvent( domain.COMIC_EVENT_ID, context );
+			ce.fireEvent( Constants.COMIC_EVENT_ID, context );
 
 		},
 		
@@ -152,39 +152,52 @@ if ( typeof nl === "undefined" ) { nl = {}; }; if ( typeof nl.windgazer === "und
 			var prev = null;
 			var title = null;
 			var img = null;
+			
+			try {
 
-			if (jsonData.query.count > 0) {
-
-				var links = this.getLinksFromJSON ( jsonData.query.results["a"], context );
-				
-				prev = links.prev;
-				next = links.next;
-				
-				//Prepender
-				if (prev && prev.length < this.params["URL"].length) prev = this.params["URL"] + prev;
-				if (next && next.length < this.params["URL"].length) next = this.params["URL"] + next;
+				if (jsonData.query.count > 0) {
 	
-				title = jsonData.query.results.img.alt;
+					var links = this.getLinksFromJSON ( jsonData.query.results["a"], context );
+					
+					prev = links.prev;
+					next = links.next;
+					
+					//Prepender
+					if (prev && prev.length < this.params["URL"].length) prev = this.params["URL"] + prev;
+					if (next && next.length < this.params["URL"].length) next = this.params["URL"] + next;
 		
-				//To facilitate somewhat more 'rough' xpath results, checking for image array
-				//and picking only the first
-		
-				if (jsonData.query.results["img"].length) {
-					img = jsonData.query.results.img[0].src
-				} else {
-					img = jsonData.query.results.img.src;
+					title = jsonData.query.results.img.alt;
+			
+					//To facilitate somewhat more 'rough' xpath results, checking for image array
+					//and picking only the first
+			
+					if (jsonData.query.results["img"].length) {
+						img = jsonData.query.results.img[0].src
+					} else {
+						img = jsonData.query.results.img.src;
+					}
+	
 				}
+				
+				var entry = new domain.Entry({
+					"title":title,
+					"imgURL":img,
+					"currentURL":context.URL,
+					"prevURL":prev,
+					"nextURL":next,
+					"comic":context.comic
+				})
+				
+				ce.fireEvent( Constants.COMIC_ENTRY_PARSED, { msg:"Parsing from JSON finished", entry: entry, context: context } );
 
+				return entry;
+	
+			} catch ( e ) {
+				console.error( e );
+				ce.fireEvent( Constants.COMIC_FETCH_FAILED, { msg:"Failed to parse / convert from JSON to Entry", exception:e, data:jsonData, context: context } );
 			}
 			
-			return new domain.Entry({
-				"title":title,
-				"imgURL":img,
-				"currentURL":context.URL,
-				"prevURL":prev,
-				"nextURL":next,
-				"comic":context.comic
-			});
+			return null;
 
 		}
 	

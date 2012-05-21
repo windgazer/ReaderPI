@@ -1,29 +1,6 @@
 (function(){
 
 	/**
-	 * Authentication listeners are setup correctly, UI can commence.
-	 */
-	this.ON_AUTH_READY = "onAuthReady";
-	/**
-	 * Authentication was successful, UI can start requesting/storing data.
-	 * Also fires when no auth is required (automatic success...)
-	 */
-	this.ON_AUTH_SUCCESS = "onAuthSuccess";
-	/**
-	 * Authentication required
-	 */
-	this.ON_AUTH_REQUIRED = "onAuthRequired";
-	/**
-	 * Error in authentication, something is attempting access but authentication
-	 * has not been processed...
-	 */
-	this.ON_AUTH_ERROR = "onAuthError";
-	/**
-	 * Authentication process was requested, but user canceled.
-	 */
-	this.ON_AUTH_CANCELED = "onAuthError";
-
-	/**
 	 * Primary function was to differentiate between W3C widget storage and HTML5
 	 * localStorage.
 	 * The intention is to add a form of authenticated online storage so that a user 
@@ -70,12 +47,12 @@
 					if ( true.toString() === storeOnline.toString() ) {
 		
 						//Show Auth dialog...
-						window.setTimeout(function(){window.ce.fireEvent( ON_AUTH_REQUIRED, self );},0);
+						window.setTimeout(function(){window.ce.fireEvent( Constants.ON_AUTH_REQUIRED, self );},0);
 		
 					} else {
 		
 						//Declare Auth success.
-						window.setTimeout(function(){window.ce.fireEvent( ON_AUTH_SUCCESS, self );},0);
+						window.setTimeout(function(){window.ce.fireEvent( Constants.ON_AUTH_SUCCESS, self );},0);
 		
 					}
 		
@@ -259,9 +236,9 @@
 			if ( true.toString() === storeOnline.toString() && !DeliciousAPI.isAuthenticated() ) {
 	
 				//Show Auth Dialog
-				window.ce.fireEvent( ON_AUTH_ERROR, this );
+				window.ce.fireEvent( Constants.ON_AUTH_ERROR, this );
 				
-				throw ON_AUTH_ERROR;
+				throw Constants.ON_AUTH_ERROR;
 
 			}
 			

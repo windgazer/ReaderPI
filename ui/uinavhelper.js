@@ -7,34 +7,36 @@
  */
 
 (function(){
+	
+	var Reader = nl.windgazer.Reader;
 
-	ce.attachEvent( nl.windgazer.COMIC_EVENT_ID, function( eid, data ) {
+	ce.attachEvent( Constants.COMIC_EVENT_ID, function( eid, data ) {
 		
-		console.log("Reacting to " + nl.windgazer.COMIC_EVENT_ID + " event.");
+		console.log("Reacting to " + Constants.COMIC_EVENT_ID + " event.");
 		
-		nl.windgazer.Reader.setEntry( data.entry );
-		nl.windgazer.Reader.setComic( data.comic );
+		Reader.setEntry( data.entry );
+		Reader.setComic( data.comic );
 
 		document.getElementById("comicImage").src = data.entry.getImgURL();
 
 	} );
 
 	function fetchPrevious() {
-		var r = nl.windgazer.Reader, c = r.getComic(), e = r.getEntry();
+		var r = Reader, c = r.getComic(), e = r.getEntry();
 		if ( e.getPrevURL(  ) ) {
 			c.fetchByURL ( e.getPrevURL(  ) );
 		}
 	}
 
 	function fetchNext() {
-		var r = nl.windgazer.Reader, c = r.getComic(), e = r.getEntry();
+		var r = Reader, c = r.getComic(), e = r.getEntry();
 		if ( e.getNextURL(  ) ) {
 			c.fetchByURL ( e.getNextURL(  ) );
 		}
 	}
 
 	function fetchLatest() {
-		var r = nl.windgazer.Reader, c = r.getComic(), e = r.getEntry();
+		var r = Reader, c = r.getComic(), e = r.getEntry();
 		if ( e.getNextURL(  ) ) { //No need to fire if we're already there...
 			c.fetchLatest (  );
 		}
@@ -74,12 +76,12 @@
 		c.fetchLast();
 	}
 	
-	ce.attachEvent( nl.windgazer.COMIC_FETCH_INPROGRESS, function(){
+	ce.attachEvent( Constants.COMIC_FETCH_INPROGRESS, function(){
 		var b = document.getElementsByTagName("body")[0];
 		b.className += " inprogress";
 	});
 	
-	ce.attachEvent( nl.windgazer.COMIC_FINISHED_LOADING, function(){
+	ce.attachEvent( Constants.COMIC_FINISHED_LOADING, function(){
 		var b = document.getElementsByTagName("body")[0];
 		var ci = document.getElementById("comicImage");
 		b.className = b.className.replace(/ ?\binprogress\b/g, "");
@@ -87,6 +89,12 @@
 		ci.parentNode.className = ci.parentNode.className.replace( / ?\bimg(L|P)\w+\b/g,"");
 		var landscape = ci.height / ci.width  < 1;
 		ci.parentNode.className += landscape?" imgLandscape":" imgPortrait";
+	});
+	
+	ce.attachEvent( Constants.COMIC_FETCH_FAILED, function() {
+
+		b.className = b.className.replace(/ ?\binprogress\b/g, "");
+
 	});
 
 	Events.attach( window, "load", function() {
@@ -104,7 +112,7 @@
 		var ci = document.getElementById("comicImage");
 		Events.attach( ci, "load", function() {
 
-			ce.fireEvent( nl.windgazer.COMIC_FINISHED_LOADING, ci );
+			ce.fireEvent( Constants.COMIC_FINISHED_LOADING, { dom: ci, entry:Reader.getEntry( ), comic: Reader.getComic( )  } );
 
 		});
 
