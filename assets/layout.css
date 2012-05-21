@@ -267,6 +267,7 @@ h2 {
 	height: 2em;
 	text-align: center;
 	z-index: 1;
+	overflow: hidden;
 }
 
 /** /Menu **/
