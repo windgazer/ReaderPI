@@ -408,7 +408,7 @@ h1,
 .inprogress h1 {
 	-webkit-animation: loadingText 3s linear 0 infinite alternate;
 }
-
+/**
 @-webkit-keyframes loadingText {
 	0% {
 		text-shadow: 0 0 1.5em #FF8;
@@ -417,7 +417,7 @@ h1,
 		text-shadow: 0 0 0.2em #FF8;
 	}
 }
-
+**/
 #ComicReader {
 	box-shadow: 0em 0em 2em rgba(220,220,128,0.5);
 }
@@ -425,7 +425,7 @@ h1,
 .inprogress #ComicReader {
 	-webkit-animation: loadingBlock 3s linear 0 infinite alternate;
 }
-
+/**
 @-webkit-keyframes loadingBlock {
 	0% {
 		box-shadow: 0em 0em 2em rgba(220,220,128,0.5);
@@ -434,7 +434,7 @@ h1,
 		box-shadow: 0em 0em 0.25em rgba(220,220,128,0.5);
 	}
 }
-
+**/
 #controls a::before,
 #controls > :first-child+li+li+li > a:hover {
 	color: rgba(32,32,32,0.75);
