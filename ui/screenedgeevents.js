@@ -16,16 +16,7 @@ var ScreenEdgeEvents = ( function( g_w, g_e ) {
 
 	var window        = g_w,
 		Events        = g_e,
-		scrollTracker = { x: 0, y: 0, vert: true, velocity: 0, t: 0 },
-		isEdgeX       = false,
-		atEdgeLeft    = false,
-		atEdgeRight   = false,
-		isEdgeY       = false,
-		atEdgeTop     = false,
-		atEdgeBottom  = false,
-		isVertical    = false,
-		now           = new Date().getTime(),
-		timeout       = -1,
+		scrollTracker, isEdgeX, atEdgeLeft, atEdgeRight, isEdgeY, atEdgeTop, atEdgeBottom, isVertical, hasFired,
 		body          = null,
 		debug         = null,
 		handlers      = [],
@@ -37,17 +28,24 @@ var ScreenEdgeEvents = ( function( g_w, g_e ) {
 		],
 		resetTimer    = null; //TODO: Use a timeout to reset all base-values, resetting it as long as scroll-events are being fired.
 
-	
+
+	/**
+	 * This contains all publically accessible methods. Since almost everything in this set
+	 * of functions is self-contained, all public access is based upon allowing an
+	 * external piece of software to add handlers to this closure.
+	 * 
+	 */	
 	var PublicAccess = {
 
 		EDGE_EVENT_TOP    : eventIDs[ 0 ],
-
 		EDGE_EVENT_BOTTOM : eventIDs[ 1 ],
-
 		EDGE_EVENT_LEFT   : eventIDs[ 2 ],
-
 		EDGE_EVENT_RIGHT  : eventIDs[ 3 ],
 
+		/**
+		 * Add handler to the ScreenEdgeEvents closure. This is the main accessing method to
+		 * enable any code to easily react to document edges.
+		 */
 		attachEvent       : function ( eventID, method ) {
 
 			handlers[ eventID ].push( method );
@@ -61,6 +59,27 @@ var ScreenEdgeEvents = ( function( g_w, g_e ) {
 		handlers[ eventIDs[ seei ] ] = [];
 
 	}
+
+	/**
+	 * This method will reset the data to it's default state.
+	 * 
+	 */	
+	function resetData( ) {
+
+		scrollTracker = { x: 0, y: 0, vert: true, velocity: 0 };
+		isEdgeX       = false;
+		atEdgeLeft    = false;
+		atEdgeRight   = false;
+		isEdgeY       = false;
+		atEdgeTop     = false;
+		atEdgeBottom  = false;
+		isVertical    = false;
+		hasFired      = false;
+		resetTimer    = null; //TODO: Use a timeout to reset all base-values, resetting it as long as scroll-events are being fired.
+
+	}
+
+	resetData( );
 
 	/**
 	 * This method attempts to prep the data for scroll-based events, using traditional media.
@@ -78,32 +97,70 @@ var ScreenEdgeEvents = ( function( g_w, g_e ) {
 		if ( debug === null ) debug = ( Options && Options.isDebug() )?true:false;
 
 		var e = e ? e : window.event; //In case IE start supporting these standards, or even already does :)
-
 		wheelData    = e.detail ? e.detail * -1 : e.wheelDelta / 30;
-		isEdgeX      = scrollTracker.x === window.scrollX;
-		atEdgeLeft   = window.scrollX <= 0;
-		atEdgeRight  = document.body.clientWidth + window.scrollX >= document.body.scrollWidth;
-		isEdgeY      = scrollTracker.y === window.scrollY;
-		atEdgeTop    = window.scrollY <= 0; //Might need small grace-area (due to 'bounce' in some browser UI's)
-		atEdgeBottom = document.body.clientHeight + window.scrollY >= document.body.scrollHeight;
-		now          = new Date().getTime();
-		timeout      = now - scrollTracker.t; //Used for determining 'fresh' scroll attempt (kinetic scrolling fires a large number of subsequent scroll events)
+
+		var	atEdgeLeftNow   = window.scrollX <= 0,
+			atEdgeRightNow  = document.body.clientWidth + window.scrollX >= document.body.scrollWidth,
+			atEdgeTopNow    = window.scrollY <= 0, //Might need small grace-area (due to 'bounce' in some browser UI's)
+			atEdgeBottomNow = document.body.clientHeight + window.scrollY >= document.body.scrollHeight;
+		
+
+		if ( resetTimer === null ) { //First run
+
+			atEdgeLeft   = atEdgeLeftNow;
+			atEdgeRight  = atEdgeRightNow;
+			atEdgeTop    = atEdgeTopNow;
+			atEdgeBottom = atEdgeBottomNow;
+
+		} else {
+
+			//Previously false values must stay false
+			atEdgeLeft   = atEdgeLeft && atEdgeLeftNow;
+			atEdgeRight  = atEdgeRight && atEdgeRightNow;
+			atEdgeTop    = atEdgeTop && atEdgeTopNow;
+			atEdgeBottom = atEdgeBottom && atEdgeBottomNow;
+
+		}
+
+		isEdgeX      = atEdgeLeft || atEdgeRight;
+		isEdgeY      = atEdgeTop || atEdgeBottom;
+
 
 		//Some hackeridoo to figure this out between WebKit / Mozilla
 		if ( typeof e.axis === "undefined" ) {
+
 			isVertical = Math.abs( e.wheelDeltaY ) > Math.abs( e.wheelDeltaX );
+
 		} else {
+
 			isVertical = e.axis > 1;
+
 		}
 
+		//Automatic reset of data, if at least 125 milliseconds without a scrollEvent take place, we're starting from scratch :)
+		if ( resetTimer !== null ) {
+
+			window.clearTimeout( resetTimer );
+
+		}
+		resetTimer = window.setTimeout( function() { resetData( ); }, 125 );
+
 	}
-	
-	function determineEventResolution() {
+
+	/**
+	 * This method is aiming to resolve wehter or not we're to be firing an edge
+	 * level event.
+	 * 
+	 */
+	function determineEventResolution( ) {
+		
+		if ( hasFired ) return false; //Don't fire again until reset
 
 		if ( isVertical ) {
 
-			if ( atEdgeTop && ( timeout > 1000 ) && wheelData > 3 ) {
+			if ( atEdgeTop && wheelData > 3 ) {
 
+				hasFired = true;
 				console.log("TOP-EDGE SWIPE");
 				var ha = handlers[ PublicAccess.EDGE_EVENT_TOP ];
 				for ( var i = 0, l = ha.length; i < l; i++ ) {
@@ -111,12 +168,10 @@ var ScreenEdgeEvents = ( function( g_w, g_e ) {
 					ha[ i ]( );
 
 				}
-				//body.className += " menuEnabled";
 
 			} else if ( wheelData < 0 ) {
 
-				if ( debug ) console.debug( "Hide top menu" );
-				//body.className = body.className.replace(/ ?\bmenuEnabled\b/g, "");
+				//Not sure if this part is still needed...
 
 			} else {
 
@@ -130,11 +185,10 @@ var ScreenEdgeEvents = ( function( g_w, g_e ) {
 			}
 
 		} else {
-			
-			//console.log(( timeout > 100 ), wheelData, isEdgeX);
 
-			if ( atEdgeLeft && ( timeout > 150 ) && wheelData > 0 ) {
+			if ( atEdgeLeft && wheelData > 0 ) {
 
+				hasFired = true;
 				console.log("LEFT-EDGE SWIPE");
 				var ha = handlers[ PublicAccess.EDGE_EVENT_LEFT ];
 				for ( var i = 0, l = ha.length; i < l; i++ ) {
@@ -145,8 +199,9 @@ var ScreenEdgeEvents = ( function( g_w, g_e ) {
 
 			}
 
-			if ( atEdgeRight && ( timeout > 150 ) && wheelData < 0 ) {
+			if ( atEdgeRight && wheelData < 0 ) {
 
+				hasFired = true;
 				console.log("RIGHT-EDGE SWIPE");
 				var ha = handlers[ PublicAccess.EDGE_EVENT_RIGHT ];
 				for ( var i = 0, l = ha.length; i < l; i++ ) {
@@ -161,13 +216,16 @@ var ScreenEdgeEvents = ( function( g_w, g_e ) {
 
 	}
 
+	/**
+	 * Handler to process scroll-based events
+	 */
 	function screenEdgeScrollEventHandler( e ) {
 		
 		prepScrollData( e );
 		
 		determineEventResolution();
 
-		scrollTracker = { x: window.scrollX, y: window.scrollY, vert: isVertical, velocity: wheelData, t: now };
+		scrollTracker = { x: window.scrollX, y: window.scrollY, vert: isVertical, velocity: wheelData };
 
 	}
 
