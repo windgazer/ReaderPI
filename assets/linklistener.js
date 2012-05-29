@@ -45,8 +45,10 @@ var LinkListener = {
 			var rel = target.getAttribute("rel");
 			if (rel && this.handles[rel]) {
 				if (!this.handles[rel](target)) return Events.cancel(e);
-				else return true;
 			}
+			Console.log("Attempting to prevent history entry to be added.");
+			window.location.replace( target.href );
+			return Events.cancel(e);
 		}		
 	},
 	/**

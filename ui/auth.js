@@ -21,7 +21,7 @@
 	window.ce.attachEvent( Constants.ON_AUTH_REQUIRED, function( eid, settings ) {
 
 		Console.log( "Opening auth dialog!" );
-		window.location.href = "#auth";
+		window.location.replace( "#auth" );
 
 	} );
 
