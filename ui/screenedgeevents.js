@@ -16,7 +16,7 @@ var ScreenEdgeEvents = ( function( g_w, g_e ) {
 
 	var window        = g_w,
 		Events        = g_e,
-		scrollTracker, isEdgeX, atEdgeLeft, atEdgeRight, isEdgeY, atEdgeTop, atEdgeBottom, isVertical, hasFired,
+		scrollTracker, isEdgeX, atEdgeLeft, atEdgeRight, isEdgeY, atEdgeTop, atEdgeBottom, isVertical, wheelData, hasFired,
 		body          = null,
 		debug         = null,
 		handlers      = [],
@@ -28,6 +28,30 @@ var ScreenEdgeEvents = ( function( g_w, g_e ) {
 		],
 		resetTimer    = null; //TODO: Use a timeout to reset all base-values, resetting it as long as scroll-events are being fired.
 
+
+	function getDimension( e, d ){
+
+		return ( e.touches?e.touches[0]:e )["page" + d];
+
+	}
+
+	function getX( e ) {
+
+		return getDimension( e, "X" );
+
+	}
+
+	function getY( e ){
+
+		return getDimension( e, "Y" );
+
+	}
+
+	function getMousePosition ( e ) {
+
+		return { x:getX( e ),y:getY( e ) };
+
+	}
 
 	/**
 	 * This contains all publically accessible methods. Since almost everything in this set
@@ -66,7 +90,10 @@ var ScreenEdgeEvents = ( function( g_w, g_e ) {
 	 */	
 	function resetData( ) {
 
-		scrollTracker = { x: 0, y: 0, vert: true, velocity: 0 };
+		if ( body === null ) body = document.getElementsByTagName("body")[0];
+		if ( debug === null ) debug = ( Options && Options.isDebug() )?true:false;
+
+		scrollTracker = { x: 0, y: 0, vert: true, velocity: 0, t: 0 };
 		isEdgeX       = false;
 		atEdgeLeft    = false;
 		atEdgeRight   = false;
@@ -78,34 +105,17 @@ var ScreenEdgeEvents = ( function( g_w, g_e ) {
 		resetTimer    = null; //TODO: Use a timeout to reset all base-values, resetting it as long as scroll-events are being fired.
 
 	}
+	
+	function checkEdges( recheck ) {
 
-	resetData( );
-
-	/**
-	 * This method attempts to prep the data for scroll-based events, using traditional media.
-	 * The main difference with touch-based events on portable media is that we may receive a
-	 * number of subsequent events with no idea which is the first of single action of the user.
-	 * 
-	 * In touch-based events we can determine because of the onTouchStart event being fired
-	 * first, at all times.
-	 * 
-	 * @argument {Event} e The event for which to parse the data.
-	 */
-	function prepScrollData( e ) {
-
-		if ( body === null ) body = document.getElementsByTagName("body")[0];
-		if ( debug === null ) debug = ( Options && Options.isDebug() )?true:false;
-
-		var e = e ? e : window.event; //In case IE start supporting these standards, or even already does :)
-		wheelData    = e.detail ? e.detail * -1 : e.wheelDelta / 30;
 
 		var	atEdgeLeftNow   = window.scrollX <= 0,
-			atEdgeRightNow  = document.body.clientWidth + window.scrollX >= document.body.scrollWidth,
+			atEdgeRightNow  = body.clientWidth + window.scrollX > body.scrollWidth,
 			atEdgeTopNow    = window.scrollY <= 0, //Might need small grace-area (due to 'bounce' in some browser UI's)
-			atEdgeBottomNow = document.body.clientHeight + window.scrollY >= document.body.scrollHeight;
+			atEdgeBottomNow = body.clientHeight + window.scrollY >= body.scrollHeight;
 		
 
-		if ( resetTimer === null ) { //First run
+		if ( recheck ) { //First run
 
 			atEdgeLeft   = atEdgeLeftNow;
 			atEdgeRight  = atEdgeRightNow;
@@ -125,6 +135,24 @@ var ScreenEdgeEvents = ( function( g_w, g_e ) {
 		isEdgeX      = atEdgeLeft || atEdgeRight;
 		isEdgeY      = atEdgeTop || atEdgeBottom;
 
+	}
+
+	/**
+	 * This method attempts to prep the data for scroll-based events, using traditional media.
+	 * The main difference with touch-based events on portable media is that we may receive a
+	 * number of subsequent events with no idea which is the first of single action of the user.
+	 * 
+	 * In touch-based events we can determine because of the onTouchStart event being fired
+	 * first, at all times.
+	 * 
+	 * @argument {Event} e The event for which to parse the data.
+	 */
+	function prepScrollData( e ) {
+
+		var e = e ? e : window.event; //In case IE start supporting these standards, or even already does :)
+		wheelData    = e.detail ? e.detail * -1 : e.wheelDelta / 30;
+
+		checkEdges( resetTimer !== null );
 
 		//Some hackeridoo to figure this out between WebKit / Mozilla
 		if ( typeof e.axis === "undefined" ) {
@@ -217,7 +245,7 @@ var ScreenEdgeEvents = ( function( g_w, g_e ) {
 	}
 
 	/**
-	 * Handler to process scroll-based events
+	 * Handler to process scroll-based events.
 	 */
 	function screenEdgeScrollEventHandler( e ) {
 		
@@ -229,8 +257,102 @@ var ScreenEdgeEvents = ( function( g_w, g_e ) {
 
 	}
 
+	/**
+	 * This handler should start the touch-events.
+	 */
+	function touchStartHandler( e ) {
+		
+		Console.log("Attempting to track touch movement");
+
+		resetData( );
+		//Figure out starting data...
+		checkEdges( false );
+
+		var position = getMousePosition( e );
+		scrollTracker = { x: position.x, y: position.y, vert: false, velocity: 0, t: new Date().getTime() };
+
+	}
+
+	/**
+	 * This handler should monitor the touch-events.
+	 */
+	function touchMoveHandler( e ) {
+
+		Console.log("Attempting to deciver touch movement");
+
+		//Double-check if we're still at the edges...
+		checkEdges( true );
+		var now      = new Date().getTime(),
+			interval = now - scrollTracker.t,
+			position = getMousePosition( e ),
+			offsetX  = position.x - scrollTracker.x, //Negative for right-edge (right-to-left swipe)
+			offsetY  = position.y - scrollTracker.y; //Negative for bottom-edge (down-to-up swipe)
+
+		isVertical = Math.abs(offsetY) > Math.abs(offsetX);
+		
+		//80px in 1 second should be approximately 3 in velocity
+		if ( isVertical ) {
+
+			wheelData = ( offsetY / interval ) * 35;
+
+		} else {
+
+			wheelData = ( offsetX / interval ) * 35;
+
+		}
+		
+		if ( 
+				(((atEdgeTop && isVertical) || (atEdgeLeft && !isVertical)) && wheelData > 0)
+				 ||
+				(((atEdgeRight && !isVertical) || (atEdgeBottom && isVertical)) && wheelData < 0)
+		) {
+			return Events.cancel( e ); //Attempting to prevent default action if we're already at the edge and scrolling beyond
+		}
+
+	}
+
+	/**
+	 * This handler should finalise the touch-events.
+	 */
+	function touchEndHandler( e ) {
+
+		Console.log("Finishing to deciver touch movement");
+
+		//Check if we're still on the edge and with enough velocity...
+		determineEventResolution( );
+		resetData( );
+
+	}
+
+	/**
+	 * This method blocks some annoying default actions that we prefer not to happen :)
+	 * 
+	 */
+	function blockDefaultActions( ) {
+
+		resetData( );
+
+		var b = document.getElementsByTagName( "body" )[0],
+
+			handler = function( e ) {
+
+				return Events.cancel( e );
+	
+			};
+		
+		Events.attach( b, "selectstart", handler );
+		
+		Events.attach( b, "dragstart", handler );
+
+	}
+
 	Events.attach( window, "mousewheel", screenEdgeScrollEventHandler );
 	Events.attach( window, "DOMMouseScroll", screenEdgeScrollEventHandler );
+	Events.attach( window, "touchstart", touchStartHandler );
+	Events.attach( window, "touchmove", touchMoveHandler );
+	Events.attach( window, "touchend", touchEndHandler );
+	
+	Events.attach( window, "load", blockDefaultActions );
 	
 	return PublicAccess;
 
