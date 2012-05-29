@@ -197,16 +197,16 @@ var ScreenEdgeEvents = ( function( g_w, g_e ) {
 
 				}
 
-			} else if ( wheelData < 0 ) {
+			}
+			
+			if ( atEdgeBottom && wheelData < -3 ) {
 
-				//Not sure if this part is still needed...
+				hasFired = true;
+				console.log("BOTTOM-EDGE SWIPE");
+				var ha = handlers[ PublicAccess.EDGE_EVENT_BOTTOM ];
+				for ( var i = 0, l = ha.length; i < l; i++ ) {
 
-			} else {
-
-				//Reset timeout to previous state if at the edge...
-				if ( atEdgeTop || atEdgeBottom ) {
-
-					now = scrollTracker.t;
+					ha[ i ]( );
 
 				}
 
