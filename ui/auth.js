@@ -1,21 +1,30 @@
 (function(){
 
-	LinkListener.addHandler("authVerify", function() {
+	LinkListener.addHandler("authVerify", function( e ) {
+
 		console.log("Authenticate User");
 		var user = document.getElementById("auth-uid").value;
 		var pwd = document.getElementById("auth-pwd").value
+
 		DeliciousAPI.authenticate( user, pwd );
 		window.ce.fireEvent( Constants.ON_AUTH_SUCCESS, Settings );
-		return true;//Don't block href navigation
+
+		window.location.replace( document.getElementById("authenticationForm").action );
+		return Events.cancel(e);
+
 	});
 	
-	LinkListener.addHandler("authCancel", function() {
-		//TODO Disable online storage
+	LinkListener.addHandler("authCancel", function( e ) {
+
+		var e = e||window.event;
+
 		console.log( "Disabling online storage" );
 		Settings.setPreference("online-storage", false);
 		window.ce.fireEvent( Constants.ON_AUTH_SUCCESS, Settings );
-		document.getElementById("authenticationForm").submit();
-		return true;
+
+		window.location.replace( document.getElementById("authenticationForm").action );
+		return Events.cancel(e);
+
 	});
 	
 	window.ce.attachEvent( Constants.ON_AUTH_REQUIRED, function( eid, settings ) {
