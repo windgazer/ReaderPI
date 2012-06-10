@@ -18,6 +18,7 @@ var ScreenEdgeEvents = ( function( g_w, g_e ) {
 		Events        = g_e,
 		scrollTracker, isEdgeX, atEdgeLeft, atEdgeRight, isEdgeY, atEdgeTop, atEdgeBottom, isVertical, wheelData, hasFired,
 		body          = null,
+		control      = null,
 		debug         = null,
 		handlers      = [],
 		eventIDs      = [
@@ -60,6 +61,8 @@ var ScreenEdgeEvents = ( function( g_w, g_e ) {
 	 * 
 	 */	
 	var PublicAccess = {
+		
+		version           : "1.0.0a001",
 
 		EDGE_EVENT_TOP    : eventIDs[ 0 ],
 		EDGE_EVENT_BOTTOM : eventIDs[ 1 ],
@@ -93,6 +96,20 @@ var ScreenEdgeEvents = ( function( g_w, g_e ) {
 		if ( body === null ) body = document.getElementsByTagName("body")[0];
 		if ( debug === null ) debug = ( Options && Options.isDebug() )?true:false;
 
+		if ( control === null && body !== null ) {
+
+			control                = document.createElement("div");
+			control.id             = "nl_windgazer_screenEdgeControl";
+			control.style.position = "fixed";
+			control.style.top      = "0";
+			control.style.bottom   = "0";
+			control.style.left     = "0";
+			control.style.right    = "0";
+
+			body.appendChild( control );
+
+		}
+
 		scrollTracker = { x: 0, y: 0, vert: true, velocity: 0, t: 0 };
 		isEdgeX       = false;
 		atEdgeLeft    = false;
@@ -110,9 +127,9 @@ var ScreenEdgeEvents = ( function( g_w, g_e ) {
 
 
 		var	atEdgeLeftNow   = window.scrollX <= 0,
-			atEdgeRightNow  = body.clientWidth + window.scrollX > body.scrollWidth,
+			atEdgeRightNow  = control.clientWidth + window.scrollX >= body.scrollWidth,
 			atEdgeTopNow    = window.scrollY <= 0, //Might need small grace-area (due to 'bounce' in some browser UI's)
-			atEdgeBottomNow = body.clientHeight + window.scrollY >= body.scrollHeight;
+			atEdgeBottomNow = control.clientHeight + window.scrollY >= body.scrollHeight;
 		
 
 		if ( recheck ) { //First run
