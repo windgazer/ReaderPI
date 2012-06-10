@@ -72,7 +72,13 @@ if ( typeof nl === "undefined" ) { nl = {}; }; if ( typeof nl.windgazer === "und
 				}
 			}
 			
-			domain.YQLHelper.fetchYQL( this.yqlQuery, values, this.callback );
+			var self = this;
+
+			window.setTimeout( function() {
+
+				domain.YQLHelper.fetchYQL( self.yqlQuery, values, self.callback );
+
+			}, 1);
 
 			return uid
 		},
