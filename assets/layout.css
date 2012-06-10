@@ -406,10 +406,10 @@ h1,
 	text-shadow: 0 0 0.75em #FF8;
 }
 
+/**
 .inprogress h1 {
 	-webkit-animation: loadingText 3s linear 0 infinite alternate;
 }
-/**
 @-webkit-keyframes loadingText {
 	0% {
 		text-shadow: 0 0 1.5em #FF8;
@@ -423,10 +423,10 @@ h1,
 	box-shadow: 0em 0em 2em rgba(220,220,128,0.5);
 }
 
+/**
 .inprogress #ComicReader {
 	-webkit-animation: loadingBlock 3s linear 0 infinite alternate;
 }
-/**
 @-webkit-keyframes loadingBlock {
 	0% {
 		box-shadow: 0em 0em 2em rgba(220,220,128,0.5);
