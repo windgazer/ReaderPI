@@ -132,9 +132,7 @@ input, table, tr, td {
 
 /*Content Replacement*/
 
-#controls > :first-child:hover a::before,
-#controls > :first-child+li:hover a::before,
-#controls > :first-child+li+li:hover a::before {
+#controls > li a::before {
 	display: block;
 	text-indent: 0;
 	position: absolute;
@@ -147,16 +145,21 @@ input, table, tr, td {
 	margin-top: -0.5em;
 	font-weight: bolder;
 	z-index: 80;
+	opacity: 0;
 }
 
-#controls > :first-child+li:hover a::before {
+#controls > :first-child+li a::before {
 	content: "<";
 	text-align: left;
 }
 
-#controls > :first-child+li+li:hover a::before {
+#controls > :first-child+li+li a::before {
 	content: ">";
 	text-align: right;
+}
+
+#controls > li:hover a::before {
+	opacity: 1;
 }
 
 /** /Controls **/
@@ -342,17 +345,23 @@ figure {
 #ComicReader .imgLandscape:last-child img {
 }
 
-.inprogress #ComicReader::before {
+#ComicReader::before {
 	content: "Loading...";
 	display: block;
 	position: absolute;
 	top: -0.1em;
+	right: -0.1em;
+	bottom: -0.1em;
 	left: -0.1em;
-	min-width: 100%;
-	min-height: 100%;
 	text-shadow: 0 0 0.75em #FF8;
 	border: 0.1em solid rgba(0,0,0,0.9);
+	border-radius: 0.25em;
 	z-index: 100;
+	opacity: 0;
+}
+
+.inprogress #ComicReader::before {
+	opacity: 1;
 }
 
 
@@ -451,7 +460,8 @@ h1,
 #ComicReader::before {
 	color: rgba(0,0,0,1);
 	/*background: transparent -webkit-radial-gradient(50% 50%, ellipse cover, rgba(0,0,0,0.5), rgba(0,0,0,0.5) 15%, rgba(0,0,0,0.95) 90%);*/
-	background: rgba(0,0,0,0.5) -webkit-gradient(radial, 50% 50%, 30, 50% 50%, 800, from(rgba(0,0,0,0)), to(rgba(0,0,0,0.75)), color-stop(90%, rgba(0,0,0,0.75)));
+	/*background: rgba(0,0,0,0.5) -webkit-gradient(radial, 50% 50%, 30, 50% 50%, 800, from(rgba(0,0,0,0)), to(rgba(0,0,0,0.75)), color-stop(90%, rgba(0,0,0,0.75)));*/
+	background: rgba(64,64,64,0.85);
 }
 
 
