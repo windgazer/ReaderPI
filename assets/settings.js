@@ -41,10 +41,12 @@
 					self.setPreference("p-p-limit-height", true);
 					self.setPreference("ls-ls-force-width", true);
 					self.setPreference("p-p-force-height", true);
+					
+					document.location.reload( );
 		
 				} else {
 		
-					if ( true.toString() === storeOnline.toString() ) {
+					if ( typeof DeliciousAPI !== "undefined" && true.toString() === storeOnline.toString() ) {
 		
 						//Show Auth dialog...
 						window.setTimeout(function(){window.ce.fireEvent( Constants.ON_AUTH_REQUIRED, self );},0);
@@ -231,9 +233,9 @@
 		 */		
 		isStoreOnline : function () {
 	
-			var storeOnline = this.getPreference( "online-storage" );
+			var storeOnline = this.getPreference( "online-storage" ) === true.toString();
 	
-			if ( true.toString() === storeOnline.toString() && !DeliciousAPI.isAuthenticated() ) {
+			if ( storeOnline && typeof DeliciousAPI !== "undefined" && !DeliciousAPI.isAuthenticated() ) {
 	
 				//Show Auth Dialog
 				window.ce.fireEvent( Constants.ON_AUTH_ERROR, this );
@@ -242,11 +244,12 @@
 
 			}
 			
-			return storeOnline && DeliciousAPI.isAuthenticated();
+			return storeOnline && typeof DeliciousAPI !== "undefined" && DeliciousAPI.isAuthenticated();
 	
 		}
 	
 	});
 
 	this.Settings = new Settings("nl.windgazer.ComicReaderPI");
+
 })();
