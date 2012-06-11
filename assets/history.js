@@ -47,7 +47,7 @@
 		 */
 		retreiveComicId: function(  ) {
 
-			Settings.getPreference( KEY_LASTREAD_COMIC_ID );
+			return Settings.getPreference( KEY_LASTREAD_COMIC_ID );
 
 		}
 
