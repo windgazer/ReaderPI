@@ -38,9 +38,21 @@
 				var handlers = reg[ eid ];
 				if ( handlers ) {
 
-					for ( var i = 0; i < handlers.length; i++ ) {
+					var self = this;
 
-						handlers[ i ]( eid, eInfo, this.id );
+					for ( var i = 0; i < handlers.length; i++ ) {
+						
+						var hf = handlers[ i ],
+							lid = eid,
+							linfo = eInfo,
+							sid = self.id,
+							t = i * 10;
+
+						//window.setTimeout( function(  ) { hf( lid, linfo, sid ); }, t );
+						if ( Options.isDebug() ) console.warn( lid, linfo, sid, t );
+
+						hf( lid, linfo, sid );
+
 						if ( Options.isDebug() ) Console.info(handlers[ i ], eInfo, this.id, eid, i);
 
 					}
