@@ -17,12 +17,26 @@
 		if ( data.entry == null ) {
 			throw "Comic Fetch Failed!!!";
 		}
-		
-		Reader.setEntry( data.entry );
-		Reader.setComic( data.comic );
-		document.getElementById("entryUrlInput").value = data.entry.getCurrentURL();
 
-		document.getElementById("comicImage").src = data.entry.getImgURL();
+		var img = document.getElementById("comicImage"),
+			e = data.entry,
+			is = img.src,
+			es = e.getImgURL();
+		
+		Reader.setEntry( e );
+		Reader.setComic( data.comic );
+		document.getElementById("entryUrlInput").value = e.getCurrentURL();
+
+		if (img.src === e.getImgURL()) {
+
+			ce.fireEvent( Constants.COMIC_FETCH_FAILED, { msg:"Repeated attempt to render the same comic (which would've caused img.onLoad to fail)", exception:null, data:data, context: null } );
+			throw "Comic Fetch Repeated!!!";
+
+		} else {
+
+			img.src = e.getImgURL();
+
+		}
 		window.location.replace('#ComicReader');
 
 	} );
