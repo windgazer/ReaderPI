@@ -18,7 +18,7 @@ var ScreenEdgeEvents = ( function( g_w, g_e ) {
 		Events        = g_e,
 		scrollTracker, isEdgeX, atEdgeLeft, atEdgeRight, isEdgeY, atEdgeTop, atEdgeBottom, isVertical, wheelData, hasFired,
 		body          = null,
-		control      = null,
+		control       = null,
 		debug         = null,
 		handlers      = [],
 		eventIDs      = [
@@ -27,6 +27,7 @@ var ScreenEdgeEvents = ( function( g_w, g_e ) {
 			"nl.windgazer.leftEdgeEvent",
 			"nl.windgazer.rightEdgeEvent"
 		],
+		eventHandlers = [],
 		resetTimer    = null; //TODO: Use a timeout to reset all base-values, resetting it as long as scroll-events are being fired.
 
 
@@ -76,6 +77,18 @@ var ScreenEdgeEvents = ( function( g_w, g_e ) {
 		attachEvent       : function ( eventID, method ) {
 
 			handlers[ eventID ].push( method );
+
+		},
+		
+		attach            : function( ) {
+
+			enableEdgeEvents( );
+
+		},
+		
+		detach            : function( ) {
+
+			disableEdgeEvents( );
 
 		}
 
@@ -362,14 +375,29 @@ var ScreenEdgeEvents = ( function( g_w, g_e ) {
 		Events.attach( b, "dragstart", handler );
 
 	}
-
-	Events.attach( window, "mousewheel", screenEdgeScrollEventHandler );
-	Events.attach( window, "DOMMouseScroll", screenEdgeScrollEventHandler );
-	Events.attach( window, "touchstart", touchStartHandler );
-	Events.attach( window, "touchmove", touchMoveHandler );
-	Events.attach( window, "touchend", touchEndHandler );
 	
-	Events.attach( window, "load", blockDefaultActions );
+	function enableEdgeEvents( ) {
+
+		eventHandlers.push( Events.attach( window, "mousewheel", screenEdgeScrollEventHandler ) );
+		eventHandlers.push( Events.attach( window, "DOMMouseScroll", screenEdgeScrollEventHandler ) );
+		eventHandlers.push( Events.attach( window, "touchstart", touchStartHandler ) );
+		eventHandlers.push( Events.attach( window, "touchmove", touchMoveHandler ) );
+		eventHandlers.push( Events.attach( window, "touchend", touchEndHandler ) );
+		
+		eventHandlers.push( Events.attach( window, "load", blockDefaultActions ) );
+
+	}
+	
+	function disableEdgeEvents( ) {
+
+		while (eventHandlers.length) {
+			Events.detach( eventHandlers.pop() );
+		}
+
+	}
+
+	//Eabled by default...	
+	enableEdgeEvents();
 	
 	return PublicAccess;
 
