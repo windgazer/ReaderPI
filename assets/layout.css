@@ -226,7 +226,7 @@ fieldset {
 	border-radius: 0.5em;
 	padding: 1em;
 	margin: 1em auto;
-	overflow: auto;
+	overflow: scroll;
 }
 
 h2 {
