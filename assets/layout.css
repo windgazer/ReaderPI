@@ -273,6 +273,15 @@ h2 {
 	overflow: hidden;
 }
 
+.entryByUrl {
+	float: left;
+	font-size: 50%;
+	margin: 0.75em;
+} .entryByUrl a {
+	margin: 0 0 0 0.74em;
+	color: white;
+}
+
 /** /Menu **/
 
 /**

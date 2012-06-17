@@ -14,10 +14,16 @@
 		
 		console.log("Reacting to " + Constants.COMIC_EVENT_ID + " event.");
 		
+		if ( data.entry == null ) {
+			throw "Comic Fetch Failed!!!";
+		}
+		
 		Reader.setEntry( data.entry );
 		Reader.setComic( data.comic );
+		document.getElementById("entryUrlInput").value = data.entry.getCurrentURL();
 
 		document.getElementById("comicImage").src = data.entry.getImgURL();
+		window.location.replace('#ComicReader');
 
 	} );
 
@@ -41,19 +47,42 @@
 			c.fetchLatest (  );
 		}
 	}
+	
+	function entryByUrl() {
+		var inp = document.getElementById("entryUrlInput"),
+			r = Reader, c = r.getComic();
+
+		var url = inp.value;
+
+		c.fetchByURL( url );
+		
+		inp.value = "";
+
+	}
 
 	LinkListener.addHandler( "prevEntry", fetchPrevious );
 
 	LinkListener.addHandler( "nextEntry", fetchNext );
 
 	LinkListener.addHandler( "latestEntry", fetchLatest );
+
+	LinkListener.addHandler( "entryByUrl", entryByUrl );
 	
 	ScreenEdgeEvents.attachEvent( ScreenEdgeEvents.EDGE_EVENT_LEFT, fetchPrevious );
 	
 	ScreenEdgeEvents.attachEvent( ScreenEdgeEvents.EDGE_EVENT_RIGHT, fetchNext );
 	
 	function openMenu( ) {
-		document.body.className += " menuEnabled";
+		var hash = window.location.hash;
+		if ( hash ) {
+			if ( hash.substr(1) !== "ComicReader" ) return;
+		}
+		window.location.replace('#menu');
+		window.setTimeout(function() {
+
+			document.body.className += " menuEnabled";
+
+		}, 10);
 	}
 	
 	function closeMenu( ){
@@ -61,8 +90,13 @@
 		document.body.className = document.body.className.replace(/ ?\bmenuEnabled\b/g, "");
 
 	}
-	
-	ScreenEdgeEvents.attachEvent( ScreenEdgeEvents.EDGE_EVENT_TOP, openMenu );
+
+	try {
+		blackberry.app.event.onSwipeDown(openMenu);
+	} catch ( e ) {
+		ScreenEdgeEvents.attachEvent( ScreenEdgeEvents.EDGE_EVENT_TOP, openMenu );
+		console.warn( "If you're not running this on a BlackBerry Device, don't worry about it :)", e );
+	}
 
 	ce.attachEvent( Constants.COMIC_FETCH_INPROGRESS, closeMenu);
 	
@@ -94,6 +128,7 @@
 	
 	ce.attachEvent( Constants.COMIC_FETCH_FAILED, function() {
 
+		var b = document.getElementsByTagName("body")[0];
 		b.className = b.className.replace(/ ?\binprogress\b/g, "");
 
 	});
