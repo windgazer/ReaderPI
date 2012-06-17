@@ -114,7 +114,7 @@ if ( typeof nl === "undefined" ) { nl = {}; }; if ( typeof nl.windgazer === "und
 
 				if (jsonLinks.length) {
 
-					if (isPrevLink && isPrevLink( jsonLinks[1], context.URL, context.comic ) ) {
+					if (isPrevLink && isPrevLink( jsonLinks[1], context.URL, context.comic, jsonLinks[0] ) ) {
 						prev = jsonLinks[1].href;
 						next = jsonLinks[0].href;
 					} else {
@@ -163,17 +163,12 @@ if ( typeof nl === "undefined" ) { nl = {}; }; if ( typeof nl.windgazer === "und
 
 				if (jsonData.query.count > 0) {
 	
-					var links = this.getLinksFromJSON ( jsonData.query.results["a"], context );
+					var links = this.getLinksFromJSON ( jsonData.query.results["a"], context ),
+						url = this.params["URL"];
 					
 					prev = links.prev;
 					next = links.next;
 					
-					//Prepender
-					if (prev && prev.length < this.params["URL"].length) prev = this.params["URL"] + prev;
-					if (next && next.length < this.params["URL"].length) next = this.params["URL"] + next;
-		
-					title = jsonData.query.results.img.alt;
-			
 					//To facilitate somewhat more 'rough' xpath results, checking for image array
 					//and picking only the first
 			
@@ -182,7 +177,14 @@ if ( typeof nl === "undefined" ) { nl = {}; }; if ( typeof nl.windgazer === "und
 					} else {
 						img = jsonData.query.results.img.src;
 					}
-	
+
+					//Prepender
+					if (prev && prev.length < url.length) prev = url + prev;
+					if (next && next.length < url.length) next = url + next;
+					if (img && img.length < url.length) img = url + img;
+		
+					title = jsonData.query.results.img.alt;
+
 				}
 				
 				var entry = new domain.Entry({
@@ -199,8 +201,10 @@ if ( typeof nl === "undefined" ) { nl = {}; }; if ( typeof nl.windgazer === "und
 				return entry;
 	
 			} catch ( e ) {
-				console.error( e );
+
+				console.error( JSON.stringify( e ) );
 				ce.fireEvent( Constants.COMIC_FETCH_FAILED, { msg:"Failed to parse / convert from JSON to Entry", exception:e, data:jsonData, context: context } );
+
 			}
 			
 			return null;
