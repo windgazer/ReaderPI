@@ -2,7 +2,7 @@ if ( typeof nl === "undefined" ) { nl = {}; }; if ( typeof nl.windgazer === "und
 
 ( function( domain ) {
 	
-	domain.EntryProps = ["title", "imgURL", "currentURL", "prevURL", "nextURL", "comic"];
+	domain.EntryProps = ["title", "imgURL", "currentURL", "prevURL", "nextURL", "comic", "latestURL"];
 
 	domain.Entry = function( props ) {
 		
@@ -45,6 +45,12 @@ if ( typeof nl === "undefined" ) { nl = {}; }; if ( typeof nl.windgazer === "und
 		getNextURL: function(  ) {
 
 			return this.props.nextURL;
+
+		},
+		
+		getLatestURL: function(  ) {
+
+			return this.props.latestURL;
 
 		},
 

@@ -154,10 +154,11 @@ if ( typeof nl === "undefined" ) { nl = {}; }; if ( typeof nl.windgazer === "und
 		
 		convertFromJSON: function( jsonData, context ) {
 
-			var next = null;
-			var prev = null;
-			var title = null;
-			var img = null;
+			var next 	= null,
+				prev 	= null,
+				latest	= null,
+				title 	= null,
+				img 	= null;
 			
 			try {
 
@@ -166,8 +167,9 @@ if ( typeof nl === "undefined" ) { nl = {}; }; if ( typeof nl.windgazer === "und
 					var links = this.getLinksFromJSON ( jsonData.query.results["a"], context ),
 						url = this.params["URL"];
 					
-					prev = links.prev;
-					next = links.next;
+					prev   = links.prev;
+					next   = links.next;
+					latest = links.latest;
 					
 					//To facilitate somewhat more 'rough' xpath results, checking for image array
 					//and picking only the first
@@ -181,19 +183,26 @@ if ( typeof nl === "undefined" ) { nl = {}; }; if ( typeof nl.windgazer === "und
 					//Prepender
 					if (prev && prev.length < url.length) prev = url + prev;
 					if (next && next.length < url.length) next = url + next;
-					if (img && img.length < url.length) img = url + img;
+					if (latest && latest.length < url.length) latest = url + latest;
+					if (img && img.length < url.length) {
+						img = url + img;
+					} else if ( !img ) {
+						throw "No img in result!!";
+					}
 		
 					title = jsonData.query.results.img.alt;
 
 				}
-				
+
+				//latestURL is optional
 				var entry = new domain.Entry({
-					"title":title,
-					"imgURL":img,
-					"currentURL":context.URL,
-					"prevURL":prev,
-					"nextURL":next,
-					"comic":context.comic
+					"title"      :title,
+					"imgURL"     :img,
+					"currentURL" :context.URL,
+					"prevURL"    :prev,
+					"nextURL"    :next,
+					"comic"      :context.comic,
+					"latestURL"  :latest
 				})
 				
 				ce.fireEvent( Constants.COMIC_ENTRY_PARSED, { msg:"Parsing from JSON finished", entry: entry, context: context } );
