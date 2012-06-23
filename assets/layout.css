@@ -302,6 +302,15 @@ figure {
 	transition: margin 500ms ease-in-out;
 }
 
+figure::after {
+	display: block;
+	content: ".";
+	width: 0;
+	height: 0;
+	visibility: hidden;
+	clear: both;
+}
+
 .menuEnabled figure {
 	margin-top: 2em;
 }
@@ -409,6 +418,13 @@ figure {
 
 .advanced, label.advanced + input {
 	display: none;
+}
+
+.orientation_portrait div.imgLandscape {
+	float: left;
+}
+.orientation_portrait div.imgLandscape img {
+	float: left;
 }
 
 /** /Reader **/
