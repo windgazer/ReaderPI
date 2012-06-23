@@ -150,7 +150,8 @@
 	Events.attach( window, "load", function() {
 
 		var comics = Comics.getComics(),
-			cs = document.getElementById("comicSelector");
+			cs = document.getElementById("comicSelector"),
+			b = document.getElementsByTagName("body")[0];
 		
 		for (var i = 0; i < comics.length; i++) {
 			var c = comics[i];
@@ -163,6 +164,17 @@
 		Events.attach( ci, "load", function() {
 
 			ce.fireEvent( Constants.COMIC_FINISHED_LOADING, { dom: ci, entry:Reader.getEntry( ), comic: Reader.getComic( )  } );
+
+		});
+		
+		KeyListener.addHandler( KeyListener.KEYS.KEY_LEFTARROW, function( target ){
+
+			fetchPrevious();
+
+		});
+		KeyListener.addHandler( KeyListener.KEYS.KEY_RIGHTARROW, function( target ){
+
+			fetchNext();
 
 		});
 
