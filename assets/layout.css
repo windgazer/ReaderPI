@@ -278,11 +278,16 @@ h2 {
 	font-size: 50%;
 	margin: 0.75em;
     padding-right: 1em;
-} .entryByUrl a {
+    width: 60%;
+} .entryByUrl > a {
 	margin: 0 0 0 0.74em;
 	color: white;
-} .entryByUrl input {
-    width: 42ex;
+} .entryByUrl > input {
+    width: 75%;
+} .orientation_portrait .entryByUrl {
+    width: auto;
+} .orientation_portrait .entryByUrl > input {
+    width: 25ex;
 }
 
 /** /Menu **/
