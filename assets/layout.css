@@ -3,16 +3,16 @@ body {
 	background: black;
 	padding: 0;
 	margin: 0;
+    font-family: 'KomikaDisplayRegular', Georgia, sans-serif;
 }
 
 h1, h2 {
 	text-align: center;
 	font-size: 1em;
-	height: 0;
 	margin: 0;
 }
 
-input, table, tr, td {
+input, table, tr, td, select {
 	font-size: 100%;
 }
 
@@ -31,7 +31,7 @@ input, table, tr, td {
 }
 
 .menuEnabled #controls {
-	top: 1em;
+	top: 2em;
 }
 
 #controls > :first-child,
@@ -268,7 +268,7 @@ h2 {
 	right: 0;
 	background: rgba(128, 128, 128, 0.5);
 	height: 2em;
-	text-align: center;
+	text-align: left;
 	z-index: 1;
 	overflow: hidden;
 }
@@ -277,9 +277,12 @@ h2 {
 	float: left;
 	font-size: 50%;
 	margin: 0.75em;
+    padding-right: 1em;
 } .entryByUrl a {
 	margin: 0 0 0 0.74em;
 	color: white;
+} .entryByUrl input {
+    width: 42ex;
 }
 
 /** /Menu **/
@@ -324,7 +327,7 @@ figure::after {
 	text-align: center;
 	vertical-align: middle;
 	position: relative;
-	margin: 1em;
+	margin: 0 1em 1em;
 	-webkit-transition: all 500ms ease-out;
 	padding: 0.75em 0;
 	opacity: 1;
@@ -454,7 +457,7 @@ h1,
 }
 **/
 #ComicReader {
-	box-shadow: 0em 0em 2em rgba(220,220,128,0.5);
+	box-shadow: 0em 0em 1em rgba(220,220,128,0.5);
 }
 
 /**
