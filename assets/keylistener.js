@@ -21,7 +21,7 @@ var KeyListener = {
 		KEY_LEFTARROW:37,
 		KEY_UPARROW:38,
 		KEY_RIGHTARROW:39,
-		KEY_DOWNARROW:40,
+		KEY_DOWNARROW:40
 	},
 	/**
 	 * @private
