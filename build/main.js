@@ -9,6 +9,7 @@ function main(args) {
 	var buildDir = new FilePath( SYS.pwd );
 	var homeDir = buildDir.upDir();
 	var outDir = new FilePath( homeDir.toDir().toString() + "output/" );
+    SETTINGS.buildDir = outDir.toDir( ).toString( );
 	
 	//Set up file
 	var concat = new File( outDir.toDir().toString() + "app.js" );
@@ -68,6 +69,8 @@ function main(args) {
 	writer.write( srcs.s );
 	//Empty buffer
 	writer.close();
+
+    buildBB( outDir );
 
 }
 
@@ -155,3 +158,55 @@ function appendFile( writer, str ) {
 
 }
 
+function simpleEscape( str ) {
+
+    return str.replace( /( )/g, "\\$1" );
+
+}
+
+/**
+ * This method relies on settings stored in your user-home directory.
+ */
+function buildBB( outDir ) {
+
+    //Build for BlackBerry
+    runCommand( "mkdir", "../output/blackberry" );
+    runCommand( "cp", "../output/app.html", "../output/blackberry/app.html" );
+    
+    var files = [
+        "config.xml",
+        "icon.png",
+        "logox480.png"
+    ], fromDir = SYS.pwd + "blackberry/",
+    toDir = outDir.toDir().toString() + "blackberry/",
+    zipFile = outDir.toDir().toString() + "blackberry/" + SETTINGS.projectName + ".zip";
+
+    for (var i = files.length, n; n = files[--i]; ) {
+
+        runCommand(
+            "cp",
+            fromDir + n,
+            toDir + n
+        );
+
+    }
+
+    runCommand( "zip", "-r", "-j", "-D", "-u", "-o", zipFile, outDir.toDir().toString() + "blackberry/" );
+    
+    runCommand( "echo", 
+        simpleEscape( SETTINGS.bbwp ),
+        "'" + zipFile + "'",
+        "-o '" + outDir.toDir().toString() + "'",
+        "-v",
+        "-d"
+    );
+
+    //OSAScript arount this issue by having osascript run the echo commandline?
+    runCommand( SETTINGS.bbwp,
+        "'" + zipFile + "' " + 
+        "-o '" + outDir.toDir().toString() + "' " + 
+        "-v " + 
+        "-d"
+    );
+
+}

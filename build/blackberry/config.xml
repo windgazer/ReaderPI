@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<widget xmlns="http://www.w3.org/ns/widgets"
+		xmlns:rim="http://www.blackberry.com/ns/widgets"
+		version="1.0.0.0">
+
+	<name>Comic Reader PI</name>
+	
+	<content src="app.html" />
+	<icon src="icon.png" rim:hover="false" />
+	<!-- 	<icon src="icon-over.png" rim:hover="true" /> -->
+	
+	<rim:loadingScreen 
+	                   backgroundColor="#000000"
+	                   foregroundImage="logox480.png"
+                       onFirstLaunch="true">
+	</rim:loadingScreen>
+	
+	<feature id="blackberry.ui.dialog" />
+	
+	<feature id="blackberry.app.event" />
+
+	<access uri="http://query.yahooapis.com" subdomains="true">
+	</access>
+
+</widget>

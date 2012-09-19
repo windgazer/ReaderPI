@@ -129,6 +129,12 @@ SYS = {
 	 * @type string
 	 */
 	userDir: new String(System.getProperty("user.dir")),
+    
+	/**
+	 * The path to the home directory of the current user.
+	 * @type string
+	 */
+    userHome: new String(System.getProperty("user.home")),
 	
 	/**
 	 * Where is Java's home folder.
@@ -338,6 +344,49 @@ IO = {
 			load(lib[i]);
 	}
 }
+
+//Get external settings
+IO.include( ".bbjs.settings.js" );
+
+SETTINGS = (function(s) {
+
+    var projectName=    "ComicReaderPI",
+
+        sdkHome=        s.sdkHome||"Set this in .../build/.bbjs.settings.js",
+        buildDir=       s.buildDir||SYS.userDir + "/build",
+        barFile=        s.barFile||buildDir + "/" + projectName + ".bar",
+        bbwpDir=        s.bbwpDir||sdkHome + "/bbwp",
+        sdkBin=         s.sdkBin||bbwpDir + "/blackberry-tablet-sdk/bin",
+        bbwp=           s.bbwp||bbwpDir + "/bbwp",
+        barDeployDir=   s.barDeployDir||bbwpDir + "/blackberry-tablet-sdk\lib";
+
+    //Setup internal defaults.
+    var settings = {
+
+        projectName:    projectName,
+
+        sdkHome:        sdkHome,
+        buildDir:       buildDir,
+        barFile:        barFile,
+        bbwpDir:        bbwpDir,
+        sdkBin:         sdkBin,
+        bbwp:           bbwp,
+        barDeployDir:   barDeployDir
+
+    };
+
+    //Overwrite internal values with user-defined settings, also adds any custom values
+    for (var k in s) {
+
+        if (s.hasOwnProperty( k )) {
+            settings[k] = s[k];
+        }
+
+    }
+
+    return settings;
+
+})( settings );
 
 // now run the application
 IO.include("webtoolkit.base64.js");
