@@ -69,7 +69,7 @@ var OfflineComicTester = ReaderComic.extend({
 			"href":"//localhost/TCE1",
 			"comic":offlineComic,
 			"next":null,
-			"prev":false,
+			"prev":false
 		}),
 		new ComicEntry({
 			"title":"Small Panorama",
@@ -77,7 +77,7 @@ var OfflineComicTester = ReaderComic.extend({
 			"href":"//localhost/TCE2",
 			"comic":offlineComic,
 			"next":null,
-			"prev":null,
+			"prev":null
 		}),
 		new ComicEntry({
 			"title":"Big Portait",
@@ -85,7 +85,7 @@ var OfflineComicTester = ReaderComic.extend({
 			"href":"//localhost/TCE3",
 			"comic":offlineComic,
 			"next":null,
-			"prev":null,
+			"prev":null
 		}),
 		new ComicEntry({
 			"title":"Small Portrait",
@@ -93,7 +93,7 @@ var OfflineComicTester = ReaderComic.extend({
 			"href":"//localhost/TCE4",
 			"comic":offlineComic,
 			"next":null,
-			"prev":null,
+			"prev":null
 		}),
 		new ComicEntry({
 			"title":"Square",
@@ -101,7 +101,7 @@ var OfflineComicTester = ReaderComic.extend({
 			"href":"//localhost/TCE5",
 			"comic":offlineComic,
 			"next":false,
-			"prev":null,
+			"prev":null
 		})
 	]);
 	

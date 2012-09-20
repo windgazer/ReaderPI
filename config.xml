@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<widget xmlns="http://www.w3.org/ns/widgets"
+		id="nl.windgazer.ComicReaderPI"
+		version="1.0.0.0">
+
+	<name>Comic Reader PI</name>
+    
+    <description>A simple (Platform Independant) reader for online Comics. With the future intend of easily sharing your last-read comic to any supported platform, allowing you to pick up where you left of.</description>
+	
+	<content src="index.html" />
+
+	<icon src="icon.png" />
+
+	<access origin="http://query.yahooapis.com" subdomains="true">
+	</access>
+
+</widget>
